@@ -250,7 +250,12 @@ export default defineConfig({
           next: '下一页'
         },
         lastUpdated: {
-          text: '最后更新'
+          text: '最后更新',
+          formatOptions: {
+            dateStyle: 'medium',
+            timeStyle: 'medium',
+            forceLocale: true
+          }
         },
         footer: {
           message: 'Released under the MIT License.',
@@ -325,7 +330,12 @@ export default defineConfig({
           next: 'Next page'
         },
         lastUpdated: {
-          text: 'Last updated'
+          text: 'Last updated',
+          formatOptions: {
+            dateStyle: 'medium',
+            timeStyle: 'medium',
+            forceLocale: true
+          }
         },
         footer: {
           message: 'Released under the MIT License.',
