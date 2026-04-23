@@ -253,7 +253,8 @@ export default defineConfig({
           text: '最后更新'
         },
         footer: {
-          copyright: 'Copyright © 2026 REFINIST'
+          message: 'Released under the MIT License.',
+          copyright: 'Copyright © 2026-present REFINIST'
         }
       }
     },
@@ -327,7 +328,8 @@ export default defineConfig({
           text: 'Last updated'
         },
         footer: {
-          copyright: 'Copyright © 2026 REFINIST'
+          message: 'Released under the MIT License.',
+          copyright: 'Copyright © 2026-present REFINIST'
         }
       }
     }

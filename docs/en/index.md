@@ -17,58 +17,16 @@ hero:
       link: https://github.com/refinist/lanhu-context-mcp
 
 features:
-  - title: 'End-to-End Flow'
-    icon:
-      light: /icons/home-workflow-light.svg
-      dark: /icons/home-workflow-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '🔗 End-to-End Flow'
     details: 'From design URL parsing and structure extraction to asset preparation and implementation-context output, get_design_context handles the main path in one place'
-  - title: 'Ready to Use'
-    icon:
-      light: /icons/home-package-open-light.svg
-      dark: /icons/home-package-open-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '📦 Ready to Use'
     details: 'Distributed as an npm package, so you can invoke it directly with `npx lanhu-context-mcp` for a cleaner MCP setup'
-  - title: 'Cross-Platform'
-    icon:
-      light: /icons/home-blocks-light.svg
-      dark: /icons/home-blocks-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
-    details: 'The output is framework-agnostic, so downstream AI can continue into web, Android, iOS, and other target platforms'
-  - title: 'Tailwind Output'
-    icon:
-      light: /icons/home-wand-sparkles-light.svg
-      dark: /icons/home-wand-sparkles-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '🌐 Cross-Platform'
+    details: 'The output is framework-agnostic, making it easier for AI to keep transforming the CSS into Less, CSS-in-JS, or continue implementation into web stacks such as Vue and React, as well as Android and iOS targets'
+  - title: '🎨 Tailwind Output'
     details: 'Style output can be reshaped into a form that is easier for AI to consume, helping <strong>reduce token usage</strong> and context noise'
-  - title: 'Pixel Scaling'
-    icon:
-      light: /icons/home-scaling-light.svg
-      dark: /icons/home-scaling-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
-    details: 'Scale CSS px values by a chosen multiplier, which is useful when a 1x design needs target output specs'
-  - title: 'Browser Helper'
-    icon:
-      light: /icons/home-puzzle-light.svg
-      dark: /icons/home-puzzle-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '🆚 On Par with Figma MCP'
+    details: 'If you are familiar with Figma MCP, you can think of it as the Lanhu counterpart to the same kind of workflow: turn design data into context that downstream AI can keep building from'
+  - title: '🧩 Browser Helper'
     details: 'A companion Lanhu browser extension that quickly copies the selected layer link and prompt snippet'
 ---

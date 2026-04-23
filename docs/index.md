@@ -17,58 +17,16 @@ hero:
       link: https://github.com/refinist/lanhu-context-mcp
 
 features:
-  - title: '主链路一体化'
-    icon:
-      light: /icons/home-workflow-light.svg
-      dark: /icons/home-workflow-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '🔗 主链路一体化'
     details: '从设计稿链接解析、结构提取到图片资源准备与实现上下文交付，用 get_design_context 一次拿全'
-  - title: '开箱即接'
-    icon:
-      light: /icons/home-package-open-light.svg
-      dark: /icons/home-package-open-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '📦 开箱即接'
     details: '作为 npm 包分发，可直接通过 `npx lanhu-context-mcp` 调用，接入 MCP 客户端更直接'
-  - title: '多端延展'
-    icon:
-      light: /icons/home-blocks-light.svg
-      dark: /icons/home-blocks-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
-    details: '输出不绑定具体框架，后续 AI 可以继续实现到 Web、Android、iOS 等目标端'
-  - title: 'Tailwind 输出'
-    icon:
-      light: /icons/home-wand-sparkles-light.svg
-      dark: /icons/home-wand-sparkles-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '🌐 多端延展'
+    details: '输出不绑定具体框架，也方便 AI 继续将 CSS 转成 Less、CSS-in-JS，或进一步实现到 vue、React 等 Web 技术栈，以及 Android、iOS 等目标端'
+  - title: '🎨 Tailwind 输出'
     details: '把样式进一步整理成更适合 AI 消费的表达，<strong>减少 token 消耗</strong>和上下文噪音'
-  - title: '像素缩放'
-    icon:
-      light: /icons/home-scaling-light.svg
-      dark: /icons/home-scaling-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
-    details: '支持按倍率放大 CSS px 值，适合把 1x 设计稿输出成目标规格'
-  - title: '插件提效'
-    icon:
-      light: /icons/home-puzzle-light.svg
-      dark: /icons/home-puzzle-dark.svg
-      alt: ''
-      width: 26
-      height: 26
-      wrap: true
+  - title: '🆚 与 Figma MCP 同级'
+    details: '如果你熟悉 Figma MCP，可以把它理解成蓝湖场景下的同类方案：先把设计稿整理成 AI 可继续消费的实现上下文，再继续推进到项目实现'
+  - title: '🧩 插件提效'
     details: '配套蓝湖浏览器插件，快速复制选中图层链接和示例提示词'
 ---

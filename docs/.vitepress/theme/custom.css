@@ -11,14 +11,22 @@
     #4d91ff 52%,
     #63c5ff 92%
   );
-  --vp-home-hero-image-background-image: radial-gradient(
-    circle,
-    rgba(73, 168, 255, 0.42) 0,
-    rgba(73, 168, 255, 0.22) 34%,
-    rgba(73, 168, 255, 0.08) 64%,
-    rgba(73, 168, 255, 0) 84%
-  );
-  --vp-home-hero-image-filter: blur(92px);
+  --vp-home-hero-image-background-image:
+    radial-gradient(
+      circle at 34% 36%,
+      rgba(40, 120, 255, 0.6) 0,
+      rgba(40, 120, 255, 0.32) 28%,
+      rgba(40, 120, 255, 0.1) 56%,
+      rgba(40, 120, 255, 0) 78%
+    ),
+    radial-gradient(
+      circle at 70% 68%,
+      rgba(99, 197, 255, 0.5) 0,
+      rgba(99, 197, 255, 0.26) 26%,
+      rgba(99, 197, 255, 0.08) 54%,
+      rgba(99, 197, 255, 0) 76%
+    );
+  --vp-home-hero-image-filter: blur(82px);
 }
 
 .dark {
@@ -33,14 +41,22 @@
     #4d91ff 52%,
     #7fe0ff 92%
   );
-  --vp-home-hero-image-background-image: radial-gradient(
-    circle,
-    rgba(40, 120, 255, 0.38) 0,
-    rgba(40, 120, 255, 0.2) 34%,
-    rgba(40, 120, 255, 0.08) 64%,
-    rgba(120, 190, 255, 0) 84%
-  );
-  --vp-home-hero-image-filter: blur(100px);
+  --vp-home-hero-image-background-image:
+    radial-gradient(
+      circle at 34% 36%,
+      rgba(40, 120, 255, 0.58) 0,
+      rgba(40, 120, 255, 0.3) 28%,
+      rgba(40, 120, 255, 0.1) 56%,
+      rgba(40, 120, 255, 0) 78%
+    ),
+    radial-gradient(
+      circle at 70% 68%,
+      rgba(127, 224, 255, 0.42) 0,
+      rgba(127, 224, 255, 0.2) 26%,
+      rgba(127, 224, 255, 0.08) 54%,
+      rgba(127, 224, 255, 0) 76%
+    );
+  --vp-home-hero-image-filter: blur(88px);
 }
 
 .VPHero .image-bg {
