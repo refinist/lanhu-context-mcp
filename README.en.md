@@ -8,7 +8,6 @@
 
 ## Features
 
-- ✨ Turns a Lanhu design into context you can hand directly to AI for implementation
 - 🎨 Supports both `HTML+CSS` and `HTML+Tailwind` output, so you can choose the form that fits your stack better
 - 🖼️ Returns slice asset mappings and download commands to reduce manual image handling
 - 🧱 Includes `Design Tokens` and a design preview for downstream implementation and visual checking
