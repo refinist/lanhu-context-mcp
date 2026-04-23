@@ -46,6 +46,10 @@ We recommend installing [Lanhu Helper](https://chromewebstore.google.com/detail/
 
 If you want earlier access to new features, you can also install it manually from the zip package below. Chrome Web Store review usually takes time, so the latest version may not appear in the store immediately.
 
+::: tip
+If the current version matches the Web Store, use the store version. Use the early-access zip only when it is newer.
+:::
+
 <LatestLanhuHelperDownloadLink
   prefix="Download"
   empty-text="No download available yet"

@@ -54,7 +54,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "docs:dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs --open",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "worker:dev": "pnpm docs:build && wrangler dev",

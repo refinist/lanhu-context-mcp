@@ -9,13 +9,11 @@ Lanhu designs are still widely used across many teams. Lanhu already ships its o
 - conversion quality depends heavily on design consistency; the cleaner the source design, the more stable the result usually is
 - Lanhu also has to support multiple design sources such as PS, Figma, and Sketch, so the underlying conversion path is inherently complex and errors are hard to avoid completely
 - some outer containers end up with fixed heights, which is not friendly for responsive layouts
-- slice downloading, naming, and organization still involve a lot of manual work
+- slice downloading, naming, and file organization still involve a lot of manual work
 
 **So in the AI era, is there a better way to deal with these problems?**
 
-That is the idea behind `Lanhu Context MCP`. It is not trying to generate final business code directly. It first turns a Lanhu design into context you can hand directly to AI for implementation, adds structured information, slice download handling, and implementation guidance, and then leaves the remaining engineering work to AI.
-
-It is not a promise of final production code. It is a way to package a single Lanhu design into context you can hand directly to AI for implementation. In this project, that context mainly includes:
+That is the idea behind `Lanhu Context MCP`. It does not try to generate final business code directly. Instead, it packages a single Lanhu design into implementation context that downstream AI can consume more reliably, adds structured information, slice download handling, and implementation guidance, and then leaves the remaining engineering work to AI. In this project, that context mainly includes:
 
 - **`HTML+CSS` design spec**: the main reference for downstream implementation, keeping as much structure, sizing, and style detail from the design as possible
 - **slice download handling**: original slice URLs, target local paths, and download commands so AI can pull assets into the repo in batches instead of leaving that work to the user
