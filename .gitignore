@@ -19,5 +19,6 @@ coverage
 *.tgz
 
 package
+package.json.backup
 
 
