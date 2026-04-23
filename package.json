@@ -15,12 +15,14 @@
     "url": "https://github.com/refinist/lanhu-context-mcp/issues"
   },
   "keywords": [
+    "lanhu",
+    "lanhuapp",
+    "lanhu-context-mcp",
+    "lanhu-mcp",
+    "蓝湖",
     "mcp",
     "mcp-server",
     "model-context-protocol",
-    "lanhu",
-    "lanhuapp",
-    "蓝湖",
     "design",
     "design-to-code",
     "design-tokens",
