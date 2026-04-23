@@ -4,6 +4,6 @@
 
 目前已迁移：
 
-- [Lanhu Context MCP: 把蓝湖设计稿整理成 AI 可直接消费的实现上下文](/blog/lanhu-ai-context)
+- [Lanhu Context MCP: 把蓝湖设计稿整理成可直接交给 AI 落地实现的上下文](/blog/lanhu-ai-context)
 
 如果你想直接看当前文章，可以去 [博客文章](/blog/lanhu-ai-context)。

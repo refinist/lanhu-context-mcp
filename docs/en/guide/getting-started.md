@@ -8,6 +8,12 @@
 
 - Enable transcoding for the design file before uploading it to Lanhu.
 
+<img
+  src="/images/design2code.png"
+  alt="Lanhu Helper Design2code"
+  width="300"
+/>
+
 ## Step 1. Prepare environment variables
 
 First, create a `.env.local` file.
@@ -149,3 +155,5 @@ https://lanhuapp.com/web/#/item/project/detailDetach?tid={tid}&pid={pid}&project
 ::: tip
 You can write the prompt however you like, but the Lanhu URL must be complete and correct, or the tool cannot be called properly.
 :::
+
+🎉 enjoy ~

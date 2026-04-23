@@ -40,13 +40,16 @@
 
 ### 从 Chrome 网上应用店安装
 
-推荐优先从 Chrome 网上应用店安装 `Lanhu Helper`。
+推荐优先从 Chrome 网上应用店安装 [Lanhu Helper](https://chromewebstore.google.com/detail/lanhu-helper/kicpebokhdkhmoeplbbfjlfngnioijio)。
 
 ### 从压缩包安装（抢先体验）
 
 如果你想及时体验新功能，也可以使用下面这个压缩包手动安装。因为商店审核通常需要一定时间，最新版本不会立即同步到商店。
 
-[点击下载 lanhu-helper-v0.0.4.zip](/downloads/lanhu-helper-v0.0.4.zip)
+<LatestLanhuHelperDownloadLink
+  prefix="点击下载"
+  empty-text="当前暂无可下载文件"
+/>
 
 安装步骤：
 

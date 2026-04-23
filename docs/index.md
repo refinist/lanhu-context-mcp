@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Lanhu Context MCP
   text: '一个 Tool 打通从蓝湖设计稿到代码实现的链路'
-  tagline: '把蓝湖设计稿整理成 AI 可直接消费的实现上下文'
+  tagline: '把蓝湖设计稿整理成可直接交给 AI 落地实现的上下文'
   image:
     src: /lanhu-context-mark.svg
     alt: Lanhu Context MCP
@@ -14,7 +14,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/refinist/Lanhu-Context-MCP
+      link: https://github.com/refinist/lanhu-context-mcp
 
 features:
   - title: '主链路一体化'

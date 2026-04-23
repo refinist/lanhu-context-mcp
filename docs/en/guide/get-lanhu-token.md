@@ -12,9 +12,9 @@ The Lanhu token used here is the full value copied from the browser `Cookie` req
 1. Open `https://lanhuapp.com` and make sure you are logged in
 2. Open browser developer tools and switch to `Network`
 3. Refresh the page
-4. Click any request whose domain is `lanhuapp.com`
+4. In the top filter bar, choose `Fetch/XHR`, then click any request whose domain is `lanhuapp.com`
 5. In `Headers`, find the `Request Headers` section and locate `Cookie`
-6. Copy only the full value after `Cookie:` and do not include the `Cookie:` label itself. That full value is the token used here
+6. Copy only the full value after `Cookie` and do not include the `Cookie` label itself. That full value is the token used here
 
 Once you have the token, follow the [environment variable step in Getting Started](/en/guide/getting-started#step-1-prepare-environment-variables).
 

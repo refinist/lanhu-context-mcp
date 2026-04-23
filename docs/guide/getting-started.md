@@ -8,6 +8,12 @@
 
 - 设计稿需要开启转码功能然后上传到蓝湖
 
+<img
+  src="/images/design2code.png"
+  alt="Lanhu Helper Design2code"
+  width="300"
+/>
+
 ## Step 1. 准备环境变量
 
 先创建一个 `.env.local` 文件。
@@ -149,3 +155,5 @@ https://lanhuapp.com/web/#/item/project/detailDetach?tid={tid}&pid={pid}&project
 ::: tip
 提示词可以按你的想法来写，但蓝湖 URL 必须确保完整且正确，否则无法正常调用 Tool。
 :::
+
+🎉 enjoy ~

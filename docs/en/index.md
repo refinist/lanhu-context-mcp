@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Lanhu Context MCP
   text: 'One tool from design to implementation context'
-  tagline: 'Turn a Lanhu design into implementation context that AI can use directly'
+  tagline: 'Turn a Lanhu design into context you can hand directly to AI for implementation'
   image:
     src: /lanhu-context-mark.svg
     alt: Lanhu Context MCP
@@ -14,7 +14,7 @@ hero:
       link: /en/guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/refinist/Lanhu-Context-MCP
+      link: https://github.com/refinist/lanhu-context-mcp
 
 features:
   - title: 'End-to-End Flow'

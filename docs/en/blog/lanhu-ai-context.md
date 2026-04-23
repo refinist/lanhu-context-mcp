@@ -1,4 +1,4 @@
-# Lanhu Context MCP: Turning Lanhu Designs into AI-Ready Implementation Context
+# Lanhu Context MCP: Turning Lanhu Designs into Context You Can Hand Directly to AI for Implementation
 
 ## Why Build Lanhu Context MCP?
 
@@ -11,11 +11,11 @@ Lanhu designs are still widely used across many teams. Lanhu already ships its o
 - some outer containers end up with fixed heights, which is not friendly for responsive layouts
 - slice downloading, naming, and organization still involve a lot of manual work
 
-So in the AI era, could these problems be handled in a better way?
+**So in the AI era, is there a better way to deal with these problems?**
 
-That is the idea behind `Lanhu Context MCP`. It is not trying to generate final business code directly. It first turns a Lanhu design into context that AI can consume more reliably, adds structured information, slice download handling, and implementation guidance, and then leaves the remaining engineering work to AI.
+That is the idea behind `Lanhu Context MCP`. It is not trying to generate final business code directly. It first turns a Lanhu design into context you can hand directly to AI for implementation, adds structured information, slice download handling, and implementation guidance, and then leaves the remaining engineering work to AI.
 
-It is not a promise of final production code. It is a way to package a single Lanhu design into implementation context that downstream AI can work with more effectively. In this project, that context mainly includes:
+It is not a promise of final production code. It is a way to package a single Lanhu design into context you can hand directly to AI for implementation. In this project, that context mainly includes:
 
 - **`HTML+CSS` design spec**: the main reference for downstream implementation, keeping as much structure, sizing, and style detail from the design as possible
 - **slice download handling**: original slice URLs, target local paths, and download commands so AI can pull assets into the repo in batches instead of leaving that work to the user
@@ -49,7 +49,7 @@ So `Lanhu Context MCP` is not about proving itself stronger than `Figma MCP`. It
 
 At the core, both are doing the same thing:
 
-**turn the design into implementation context that AI can consume more easily, then leave the final integration to AI.**
+**turn the design into context you can hand directly to AI for implementation, then leave the final integration to AI.**
 
 | Dimension                         | Figma MCP                                                   | Lanhu Context MCP                                                                                 | Notes                                                                              |
 | --------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -65,7 +65,7 @@ So the two variables that usually matter most are:
 
 In other words, MCP makes the input more like real input, but the final implementation quality still depends heavily on AI.
 
-The second variable is often the more decisive one.
+In practice, the variable that more often creates the real gap is the second one: the model's own capability.
 
 ## Model Quality Still Matters
 
@@ -89,7 +89,6 @@ One important point here: this is not asking AI to rewrite `HTML+CSS` into Tailw
 
 If your project already uses Tailwind, you can enable Tailwind output directly:
 
-- `TAILWINDCSS=true`
 - `--tailwindcss`
 
 The benefit is straightforward: the intermediate result becomes closer to your actual tech stack, so the model does not need to do a large rewrite first and the later cleanup step is usually smoother.

@@ -1,6 +1,80 @@
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitepress';
 
-const GITHUB_LINK = 'https://github.com/refinist/Lanhu-Context-MCP';
+const GITHUB_LINK = 'https://github.com/refinist/lanhu-context-mcp';
+const DOWNLOADS_DIR = fileURLToPath(
+  new URL('../public/downloads', import.meta.url)
+);
+
+type DownloadAsset = {
+  filename: string;
+  href: string;
+  version: string;
+};
+
+function parseVersionSegments(filename: string): number[] | null {
+  const match = /^lanhu-helper-v?(\d+(?:\.\d+)*)\.zip$/i.exec(filename);
+
+  if (!match) {
+    return null;
+  }
+
+  return match[1].split('.').map(part => Number.parseInt(part, 10));
+}
+
+function compareVersionSegments(a: number[], b: number[]): number {
+  const length = Math.max(a.length, b.length);
+
+  for (let index = 0; index < length; index += 1) {
+    const left = a[index] ?? 0;
+    const right = b[index] ?? 0;
+
+    if (left !== right) {
+      return left - right;
+    }
+  }
+
+  return 0;
+}
+
+function getLatestLanhuHelperDownload(): DownloadAsset | null {
+  const files = fs.readdirSync(DOWNLOADS_DIR, { withFileTypes: true });
+  const candidates = files
+    .filter(file => file.isFile())
+    .map(file => {
+      const segments = parseVersionSegments(file.name);
+
+      if (!segments) {
+        return null;
+      }
+
+      return {
+        filename: file.name,
+        href: `/downloads/${file.name}`,
+        version: segments.join('.'),
+        segments
+      };
+    })
+    .filter(candidate => candidate !== null)
+    .sort((left, right) =>
+      compareVersionSegments(right.segments, left.segments)
+    );
+
+  if (!candidates.length) {
+    return null;
+  }
+
+  const latest = candidates[0];
+
+  return {
+    filename: latest.filename,
+    href: latest.href,
+    version: latest.version
+  };
+}
+
+const latestLanhuHelperDownload = getLatestLanhuHelperDownload();
 
 function withPrefix(prefix: string, path: string): string {
   return prefix ? `${prefix}${path}` : path;
@@ -92,6 +166,11 @@ export default defineConfig({
     }
   },
   vite: {
+    define: {
+      __LATEST_LANHU_HELPER_DOWNLOAD__: JSON.stringify(
+        latestLanhuHelperDownload
+      )
+    },
     ssr: {
       noExternal: ['vitepress-component-medium-zoom']
     }

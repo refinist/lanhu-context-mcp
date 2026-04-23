@@ -2,11 +2,11 @@
 
 ## What problem does it solve?
 
-`Lanhu Context MCP` turns a single Lanhu design into implementation context that AI can keep working with.
+`Lanhu Context MCP` turns a single Lanhu design into context you can hand directly to AI for implementation.
 
 Its goal is not to generate final business code immediately. It first delivers a stable design spec that downstream models can adapt into real project code.
 
-If you are familiar with `Figma MCP`, the rough mental model is similar: instead of handing AI the code directly, you first organize design data into context that AI can consume reliably, then continue into implementation.
+If you are familiar with `Figma MCP`, the rough mental model is similar: instead of handing AI the code directly, you first organize design data into context you can hand directly to AI for implementation, then continue into implementation.
 
 `Lanhu Context MCP` is partly inspired by that `Figma MCP` style of workflow, but it stays focused on the Lanhu-specific problem:
 

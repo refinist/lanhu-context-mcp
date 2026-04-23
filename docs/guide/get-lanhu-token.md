@@ -10,11 +10,11 @@
 ## 操作步骤
 
 1. 打开 `https://lanhuapp.com` 并确认自己处于登录状态
-2. 打开浏览器开发者工具，切到 `Network`
+2. 打开浏览器开发者工具，切到 `Network（网络）`
 3. 刷新当前页面
-4. 在请求列表里随便点一个 `lanhuapp.com` 域名的请求
+4. 顶部过滤栏，选择 `Fetch/XHR`，然后在请求列表里随便点一个 `lanhuapp.com` 域名的请求，
 5. 在 `Headers` 里的 `Request Headers` 区域找到 `Cookie`
-6. 只复制 `Cookie:` 冒号后面的整段内容，不要带上 `Cookie:` 这几个字，这一整段内容就是这里使用的 Token
+6. 只复制 `Cookie` 后面的整段内容，不要带上 `Cookie` 这几个字，这一整段内容就是这里使用的 Token
 
 拿到 Token 后，直接按[快速开始的环境变量步骤](/guide/getting-started#step-1-准备环境变量)写入即可。
 
