@@ -1,0 +1,128 @@
+:root {
+  --vp-c-brand-1: #2878ff;
+  --vp-c-brand-2: #1f6cf0;
+  --vp-c-brand-3: #4d91ff;
+  --vp-c-brand-soft: rgba(40, 120, 255, 0.14);
+  --vp-medium-zoom-z-index: 1000;
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    120deg,
+    #2878ff 18%,
+    #4d91ff 52%,
+    #63c5ff 92%
+  );
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle,
+    rgba(73, 168, 255, 0.42) 0,
+    rgba(73, 168, 255, 0.22) 34%,
+    rgba(73, 168, 255, 0.08) 64%,
+    rgba(73, 168, 255, 0) 84%
+  );
+  --vp-home-hero-image-filter: blur(92px);
+}
+
+.dark {
+  --vp-c-brand-1: #6ea6ff;
+  --vp-c-brand-2: #8bb8ff;
+  --vp-c-brand-3: #4d91ff;
+  --vp-c-brand-soft: rgba(110, 166, 255, 0.18);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    120deg,
+    #8bb8ff 18%,
+    #6ea6ff 52%,
+    #7fe0ff 92%
+  );
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle,
+    rgba(120, 190, 255, 0.38) 0,
+    rgba(120, 190, 255, 0.2) 34%,
+    rgba(120, 190, 255, 0.08) 64%,
+    rgba(120, 190, 255, 0) 84%
+  );
+  --vp-home-hero-image-filter: blur(100px);
+}
+
+.VPHero .image-bg {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+}
+
+.VPHero .image-src {
+  max-width: 156px;
+  max-height: 156px;
+}
+
+@media (min-width: 640px) {
+  .VPHero .image-bg {
+    width: 420px;
+    height: 420px;
+  }
+
+  .VPHero .image-src {
+    max-width: 210px;
+    max-height: 210px;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHero .image-bg {
+    width: 560px;
+    height: 560px;
+  }
+
+  .VPHero .image-src {
+    max-width: 260px;
+    max-height: 260px;
+  }
+}
+
+.vp-code-group .tabs label[data-title^='Cursor']::before,
+.vp-code-group .tabs label[data-title^='Claude Code']::before,
+.vp-code-group .tabs label[data-title^='Codex']::before {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  content: '';
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.vp-code-group .tabs label[data-title^='Cursor']::before {
+  background-image: url('/icons/cursor.svg');
+}
+
+.vp-code-group .tabs label[data-title^='Claude Code']::before {
+  background-image: url('/icons/claude-code.svg');
+}
+
+.vp-code-group .tabs label[data-title^='Codex']::before {
+  background-image: url('/icons/codex.svg');
+  filter: invert(1);
+}
+
+.dark .vp-code-group .tabs label[data-title^='Cursor']::before {
+  filter: invert(1);
+}
+
+.dark .vp-code-group .tabs label[data-title^='Codex']::before {
+  filter: none;
+}
+
+.vp-doc div[class*='language-'] pre,
+.vp-doc div[class*='language-'] code,
+.vp-code-group div[class*='language-'] pre,
+.vp-code-group div[class*='language-'] code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.vp-doc table th {
+  white-space: nowrap;
+}

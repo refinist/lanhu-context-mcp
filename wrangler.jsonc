@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lanhu-context-mcp-docs",
+  "compatibility_date": "2025-01-15",
+  "assets": {
+    "directory": "docs/.vitepress/dist"
+  },
+  "routes": [
+    {
+      "pattern": "lanhu.refineup.com",
+      "custom_domain": true
+    }
+  ]
+}
