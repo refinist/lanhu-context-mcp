@@ -157,6 +157,21 @@ function generateHtml(
     } else if (text && /^this\.item\.\w+$/.test(String(text).trim())) {
       text = '';
     }
+    // uiType 'InputArea' overrides the default <span> output with an <input>
+    // so text nodes marked as input fields in Lanhu keep their form semantics.
+    // Loop-bound placeholders (matching item.*.lanhutextN) keep the <span>
+    // fallback since an <input> cannot meaningfully interpolate them.
+    if (
+      node.uiType === 'InputArea' &&
+      !/item\.(?:specialSlot\d+\.)?lanhutext\d+/.test(text)
+    ) {
+      const placeholder = String(node.uiTypeProb?.placeholder ?? text ?? '');
+      const w = node.style?.width ?? node.props?.style?.width;
+      const h = node.style?.height ?? node.props?.style?.height;
+      const inlineStyle =
+        w != null && h != null ? ` style="width:${w}px;height:${h}px"` : '';
+      return `${spaces}<input class="${allClasses}" placeholder="${placeholder}"${inlineStyle} />`;
+    }
     return `${spaces}<span class="${allClasses}">${text}</span>`;
   }
 

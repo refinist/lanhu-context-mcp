@@ -95,6 +95,70 @@ describe('convertLanhuToHtml — node types', () => {
   });
 });
 
+describe('convertLanhuToHtml — uiType InputArea', () => {
+  test('text node with uiType InputArea renders as <input>', () => {
+    const node: SchemaNode = {
+      type: 'lanhutext',
+      props: { className: 'login-user', text: '请输入用户名' },
+      style: { width: 300, height: 40 },
+      uiType: 'InputArea',
+      children: []
+    };
+    const html = convertLanhuToHtml(node);
+    expect(html).toContain('<input');
+    expect(html).toContain('class="login-user"');
+    expect(html).toContain('placeholder="请输入用户名"');
+    expect(html).toContain('style="width:300px;height:40px"');
+    expect(html).not.toContain('<span');
+  });
+
+  test('uiTypeProb.placeholder takes precedence over props.text', () => {
+    const node: SchemaNode = {
+      type: 'lanhutext',
+      props: { className: 'search', text: 'fallback' },
+      style: { width: 200, height: 32 },
+      uiType: 'InputArea',
+      uiTypeProb: { placeholder: '搜索一下' },
+      children: []
+    };
+    const html = convertLanhuToHtml(node);
+    expect(html).toContain('placeholder="搜索一下"');
+    expect(html).not.toContain('placeholder="fallback"');
+  });
+
+  test('text node without uiType still renders as <span>', () => {
+    const html = convertLanhuToHtml(textNode('greeting', 'Hi'));
+    expect(html).toContain('<span');
+    expect(html).not.toContain('<input');
+  });
+
+  test('loop-bound placeholder keeps the <span> fallback', () => {
+    const node: SchemaNode = {
+      type: 'lanhutext',
+      props: { className: 'dyn', text: 'item.specialSlot1.lanhutext2' },
+      style: { width: 100, height: 20 },
+      uiType: 'InputArea',
+      children: []
+    };
+    const html = convertLanhuToHtml(node);
+    expect(html).toContain('<span');
+    expect(html).not.toContain('<input');
+  });
+
+  test('missing width/height omits the inline style attribute', () => {
+    const node: SchemaNode = {
+      type: 'lanhutext',
+      props: { className: 'bare', text: 'ph' },
+      uiType: 'InputArea',
+      children: []
+    };
+    const html = convertLanhuToHtml(node);
+    expect(html).toContain('<input');
+    expect(html).toContain('placeholder="ph"');
+    expect(html).not.toContain('style="width');
+  });
+});
+
 describe('convertLanhuToHtml — CSS rule generation', () => {
   test('nodes with style emit matching CSS rules', () => {
     const node = divNode('box', [], { width: 100, height: 50 });
