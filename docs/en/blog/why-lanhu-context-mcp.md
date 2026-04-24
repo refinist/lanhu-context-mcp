@@ -124,7 +124,3 @@ it does not replace judgment in the final integration stage, but it can compress
 So the better mindset is:
 
 **treat it as a tool that pushes design implementation forward by many steps, not as a one-shot endpoint.**
-
-## Acknowledgements
-
-<a href="https://github.com/dsphper/lanhu-mcp/" target="_blank" rel="noreferrer">lanhu-mcp</a> is a great project. This MCP draws on parts of its core code-conversion capabilities and implementation ideas.
