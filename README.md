@@ -4,7 +4,7 @@
 
 [![npm](https://img.shields.io/npm/v/lanhu-context-mcp.svg?colorA=2878ff&colorB=000000)](https://npmjs.com/package/lanhu-context-mcp) [![downloads/month](https://img.shields.io/npm/dm/lanhu-context-mcp.svg?colorA=2878ff&colorB=000000)](https://npmjs.com/package/lanhu-context-mcp) [![Unit Test](https://img.shields.io/github/actions/workflow/status/refinist/lanhu-context-mcp/unit-test.yml?colorA=2878ff&colorB=000000&label=Unit%20Test)](https://github.com/refinist/lanhu-context-mcp/actions/workflows/unit-test.yml) [![codecov](https://img.shields.io/codecov/c/github/refinist/lanhu-context-mcp?colorA=2878ff&colorB=000000)](https://codecov.io/github/refinist/lanhu-context-mcp)
 
-✨ 把蓝湖设计稿整理成可直接交给 AI 落地实现的上下文。
+✨ 把蓝湖设计稿整理成让 AI 生成代码还原页面的上下文。
 
 ## Features
 

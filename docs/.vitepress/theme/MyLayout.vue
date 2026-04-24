@@ -5,9 +5,7 @@ import DefaultTheme from 'vitepress/theme';
 import { nextTick, provide } from 'vue';
 
 type ViewTransitionDocument = Document & {
-  startViewTransition?: (
-    callback: () => Promise<void> | void
-  ) => {
+  startViewTransition?: (callback: () => Promise<void> | void) => {
     ready: Promise<void>;
   };
 };

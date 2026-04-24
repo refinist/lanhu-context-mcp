@@ -1,4 +1,4 @@
-# Lanhu Context MCP: Turning Lanhu Designs into Context You Can Hand Directly to AI for Implementation
+# Lanhu Context MCP: Turning Lanhu Designs into Context for AI to Generate Code and Recreate Pages
 
 ## Why Build Lanhu Context MCP?
 
@@ -13,7 +13,7 @@ Lanhu designs are still widely used across many teams. Lanhu already ships its o
 
 **So in the AI era, is there a better way to deal with these problems?**
 
-That is the idea behind `Lanhu Context MCP`. It does not try to generate final business code directly. Instead, it packages a single Lanhu design into implementation context that downstream AI can consume more reliably, adds structured information, slice download handling, and implementation guidance, and then leaves the remaining engineering work to AI. In this project, that context mainly includes:
+That is the idea behind `Lanhu Context MCP`. It does not try to generate final business code directly. Instead, it packages a single Lanhu design into context for AI to generate code and recreate pages more reliably, adds structured information, slice download handling, and implementation guidance, and then leaves the remaining engineering work to AI. In this project, that context mainly includes:
 
 - **`HTML+CSS` design spec**: the main reference for downstream implementation, keeping as much structure, sizing, and style detail from the design as possible
 - **slice download handling**: original slice URLs, target local paths, and download commands so AI can pull assets into the repo in batches instead of leaving that work to the user
@@ -27,9 +27,21 @@ If you only have an MCP, this workflow still is not fully connected.
 
 With Lanhu, you often have to open the design detail page before you can copy a usable link, and even then the copied link can still be missing a critical `tid` parameter. In that case, the input is already incomplete before the AI even starts implementing anything.
 
-That is why <a href="/en/ecosystem/lanhu-helper" target="_blank" rel="noreferrer">Lanhu Helper</a> later became a separate Chrome extension. It is simple, but practical: it makes it easier to copy valid links and sample prompts, reduces the manual work of hunting for parameters and fixing links, and makes the "Lanhu design -> MCP -> AI" workflow much smoother.
+That is why <a href="/en/ecosystem/lanhu-helper" target="_blank" rel="noreferrer">Lanhu Helper</a> later became a separate Chrome extension. What it does is not complicated, but it is practical: it lets you more directly **copy the selected-layer link** and **copy a sample prompt**, reduces the steps of manually finding and filling in parameters, and makes the "Lanhu design -> MCP -> AI" workflow connect more smoothly.
 
-This handling also borrows from the general `Figma MCP` idea: you should not only process the design itself, but also smooth out the part of the workflow before the input reaches AI. If there are still obvious breakpoints in the input chain, the MCP cannot fully show its value.
+The handling of **copying the selected-layer link** and **copying a sample prompt** also takes a cue from `Figma MCP`: you should not only process the design itself, but also smooth out the part of the workflow before the handoff to AI. As long as there are obvious breakpoints in the input chain, it is hard for MCP's value to really come through.
+
+### Figma MCP Screenshot Examples
+
+![Figma MCP copy1](/images/figma-mcp-copy-1.png)
+
+![Figma MCP copy2](/images/figma-mcp-copy-2.png)
+
+### Lanhu Helper's Complementary Capability
+
+Lanhu Helper also has a practical complementary capability: it supports **custom sample prompt templates**, so you can configure commonly used fixed prompts in advance and avoid typing them repeatedly.
+
+![Lanhu Helper screenshot-3](/images/screenshot-3.png)
 
 ## Comparing with Figma MCP
 
@@ -47,7 +59,7 @@ So `Lanhu Context MCP` is not about proving itself stronger than `Figma MCP`. It
 
 At the core, both are doing the same thing:
 
-**turn the design into context you can hand directly to AI for implementation, then leave the final integration to AI.**
+**turn the design into context for AI to generate code and recreate pages, then leave the final integration to AI.**
 
 | Dimension                         | Figma MCP                                                   | Lanhu Context MCP                                                                                 | Notes                                                                              |
 | --------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -67,7 +79,7 @@ In practice, the variable that more often creates the real gap is the second one
 
 ## Model Quality Still Matters
 
-This MCP returns structured implementation context, not final business code, so stronger models usually lead to steadier implementation.
+This MCP returns structured context for code generation and page recreation, not final business code, so stronger models usually lead to steadier implementation.
 
 Stronger models are usually better at a few things:
 
@@ -113,6 +125,6 @@ So the better mindset is:
 
 **treat it as a tool that pushes design implementation forward by many steps, not as a one-shot endpoint.**
 
-## Credits
+## Acknowledgements
 
-<a href="https://github.com/dsphper/lanhu-mcp/" target="_blank" rel="noreferrer">lanhu-mcp</a> is a great project. This MCP borrows part of its core code-conversion capabilities and implementation ideas.
+<a href="https://github.com/dsphper/lanhu-mcp/" target="_blank" rel="noreferrer">lanhu-mcp</a> is a great project. This MCP draws on parts of its core code-conversion capabilities and implementation ideas.

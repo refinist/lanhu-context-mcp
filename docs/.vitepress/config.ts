@@ -190,14 +190,14 @@ export default defineConfig({
       lang: 'zh-CN',
       title: 'Lanhu Context MCP',
       description:
-        '把蓝湖单张设计稿转换为 HTML+CSS 设计上下文的 MCP Server 文档站。',
+        '把蓝湖设计稿整理成让 AI 生成代码还原页面的上下文的 MCP Server 文档站。',
       themeConfig: {
         logo: '/lanhu-context-mark.svg',
         nav: [
           { text: '指南', link: '/guide/what-is-lanhu-context-mcp' },
           { text: 'API', link: '/reference/' },
           { text: '生态', link: '/ecosystem/lanhu-helper' },
-          { text: '博客', link: '/blog/lanhu-ai-context' }
+          { text: '博客', link: '/blog/why-lanhu-context-mcp' }
         ],
         sidebar: {
           '/guide/': createGuideSidebar('', [
@@ -228,8 +228,8 @@ export default defineConfig({
           '/ecosystem/': createEcosystemSidebar('', '生态', ['Lanhu Helper']),
           '/blog/': createBlogSidebar('', '博客', [
             {
-              text: 'Lanhu Context MCP: 把蓝湖设计稿整理成 AI 可直接消费的实现上下文',
-              link: '/blog/lanhu-ai-context'
+              text: 'Lanhu Context MCP: 把蓝湖设计稿整理成让 AI 生成代码还原页面的上下文',
+              link: '/blog/why-lanhu-context-mcp'
             }
           ]),
           '/reference/': createReferenceSidebar('', 'API 参考', [
@@ -268,14 +268,14 @@ export default defineConfig({
       lang: 'en-US',
       title: 'Lanhu Context MCP',
       description:
-        'Documentation for the MCP server that turns a single Lanhu design into HTML and CSS design context.',
+        'Documentation for the MCP server that turns a Lanhu design into context for AI to generate code and recreate pages.',
       themeConfig: {
         logo: '/lanhu-context-mark.svg',
         nav: [
           { text: 'Guide', link: '/en/guide/what-is-lanhu-context-mcp' },
           { text: 'API', link: '/en/reference/' },
           { text: 'Ecosystem', link: '/en/ecosystem/lanhu-helper' },
-          { text: 'Blog', link: '/en/blog/lanhu-ai-context' }
+          { text: 'Blog', link: '/en/blog/why-lanhu-context-mcp' }
         ],
         sidebar: {
           '/en/guide/': createGuideSidebar('/en', [
@@ -308,8 +308,8 @@ export default defineConfig({
           ]),
           '/en/blog/': createBlogSidebar('/en', 'Blog', [
             {
-              text: 'Lanhu Context MCP: Turning Lanhu Designs into AI-Ready Implementation Context',
-              link: '/blog/lanhu-ai-context'
+              text: 'Lanhu Context MCP: Turning Lanhu Designs into Context for AI to Generate Code and Recreate Pages',
+              link: '/blog/why-lanhu-context-mcp'
             }
           ]),
           '/en/reference/': createReferenceSidebar('/en', 'API Reference', [

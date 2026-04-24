@@ -59,6 +59,10 @@
   --vp-home-hero-image-filter: blur(88px);
 }
 
+.VPContent img {
+  border-radius: 8px;
+}
+
 .VPHero .image-bg {
   opacity: 1;
   transform: translate(-50%, -50%);
