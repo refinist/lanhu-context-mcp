@@ -47,6 +47,8 @@ export interface SchemaNode {
   loop?: unknown[];
   loopData?: unknown[];
   loopType?: boolean;
+  uiType?: string;
+  uiTypeProb?: { placeholder?: string };
   [key: string]: unknown;
 }
 
