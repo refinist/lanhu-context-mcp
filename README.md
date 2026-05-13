@@ -40,7 +40,7 @@ LANHU_TOKEN=your_lanhu_token_here
 
 ### Step 2. 配置 MCP
 
-把下面对应客户端的 MCP 配置写入对应文件：
+把下面对应客户端的 MCP 配置写入对应文件；如果使用 Qoder，在 MCP 服务页点击“添加”后粘贴配置：
 
 Codex（.codex/config.toml）
 
@@ -64,7 +64,25 @@ Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
 }
 ```
 
+Qoder（全局 MCP 服务）
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp"],
+      "env": {
+        "LANHU_TOKEN": "your_lanhu_token_here"
+      }
+    }
+  }
+}
+```
+
 `Codex` 的 MCP 配置比较特殊，需要额外设置 `cwd`，并把它填写为当前项目的绝对路径。由于这个路径通常因人而异，通常不建议把 `.codex/config.toml` 提交到 Git，建议做好 Git 排除并由每位开发者在本地自行维护。
+
+目前观察下来，`Qoder` 好像只能在全局配置 MCP 服务，暂时不能像项目内 `.env.local` 那样跟随项目切换。如果后续能跟随项目配置会更理想；现阶段建议在 Qoder 的 MCP 服务配置里同时写入 `LANHU_TOKEN`。
 
 **Windows**
 
@@ -104,6 +122,22 @@ Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
     "lanhu-context-mcp": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "lanhu-context-mcp"]
+    }
+  }
+}
+```
+
+Qoder（全局 MCP 服务）
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "lanhu-context-mcp"],
+      "env": {
+        "LANHU_TOKEN": "your_lanhu_token_here"
+      }
     }
   }
 }

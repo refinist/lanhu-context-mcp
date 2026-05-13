@@ -32,7 +32,7 @@ We recommend keeping your Lanhu token in `.env.local`. Local env files like this
 
 ## Step 2. Configure MCP
 
-Add the matching MCP config to the corresponding file for your client:
+Add the matching MCP config to the corresponding file for your client. For Qoder, open the MCP Services page, click Add, and paste the config:
 
 ::: code-group
 
@@ -65,10 +65,28 @@ args = ["-y", "lanhu-context-mcp"]
 }
 ```
 
+```json [Qoder (global MCP service)]
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp"],
+      "env": {
+        "LANHU_TOKEN": "your_lanhu_token_here"
+      }
+    }
+  }
+}
+```
+
 :::
 
 ::: warning Codex
 `Codex` is a bit special here: set `cwd` to the absolute path of your current project. Because this path usually differs across developers, `.codex/config.toml` should usually be excluded from Git and maintained locally by each developer.
+:::
+
+::: warning Qoder
+From current testing, `Qoder` seems to support MCP services as a global configuration only, so it does not follow the project's `.env.local` automatically. Project-level configuration would be ideal if supported later; for now, put `LANHU_TOKEN` directly in the Qoder MCP service config.
 :::
 
 **Windows**
@@ -116,6 +134,20 @@ COMSPEC = "C:\\Windows\\System32\\cmd.exe"
     "lanhu-context-mcp": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "lanhu-context-mcp"]
+    }
+  }
+}
+```
+
+```json [Qoder]
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "lanhu-context-mcp"],
+      "env": {
+        "LANHU_TOKEN": "your_lanhu_token_here"
+      }
     }
   }
 }
