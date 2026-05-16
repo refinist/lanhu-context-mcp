@@ -74,7 +74,7 @@
     "typecheck": "tsgo --noEmit",
     "prepack": "node scripts/strip-install-hooks.ts",
     "postpack": "node scripts/restore-install-hooks.ts",
-    "lint": "eslint --cache .",
+    "lint": "eslint .",
     "lint:fix": "pnpm run lint --fix",
     "format": "prettier --cache --write .",
     "prepublishOnly": "pnpm run build",
