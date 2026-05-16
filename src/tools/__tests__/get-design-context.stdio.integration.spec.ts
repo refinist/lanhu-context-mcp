@@ -11,18 +11,10 @@ import {
 } from './integration-shared.ts';
 import type { ServerConfig } from '../../config.ts';
 
-const tsxCliPath = join(
-  process.cwd(),
-  'node_modules',
-  'tsx',
-  'dist',
-  'cli.mjs'
-);
 const runScriptPath = join(process.cwd(), 'src', 'run.ts');
 
 function buildStdioArgs(config: ServerConfig): string[] {
   const args = [
-    tsxCliPath,
     runScriptPath,
     '--stdio',
     '--lanhu-token',
@@ -43,6 +35,14 @@ function buildStdioArgs(config: ServerConfig): string[] {
 
   if (config.skipSlices) {
     args.push('--skip-slices');
+  }
+
+  if (config.mode) {
+    args.push('--mode', config.mode);
+  }
+
+  if (config.outDir) {
+    args.push('--out-dir', config.outDir);
   }
 
   return args;

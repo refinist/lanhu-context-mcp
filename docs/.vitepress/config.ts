@@ -228,6 +228,10 @@ export default defineConfig({
           '/ecosystem/': createEcosystemSidebar('', '生态', ['Lanhu Helper']),
           '/blog/': createBlogSidebar('', '博客', [
             {
+              text: '从两个 issue 谈起：cwd 和 mode=files 的设计思路',
+              link: '/blog/cwd-and-files-mode'
+            },
+            {
               text: 'Lanhu Context MCP: 把蓝湖设计稿整理成让 AI 生成代码还原页面的上下文',
               link: '/blog/why-lanhu-context-mcp'
             }
@@ -307,6 +311,10 @@ export default defineConfig({
             'Lanhu Helper'
           ]),
           '/en/blog/': createBlogSidebar('/en', 'Blog', [
+            {
+              text: 'Two issues, one design story: how cwd and mode=files came about',
+              link: '/blog/cwd-and-files-mode'
+            },
             {
               text: 'Lanhu Context MCP: Turning Lanhu Designs into Context for AI to Generate Code and Recreate Pages',
               link: '/blog/why-lanhu-context-mcp'

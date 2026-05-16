@@ -13,4 +13,6 @@ export interface ServerConfig extends LanhuApiConfig {
   skipSlices: boolean;
   unitScale: number;
   promptLang: 'en-US' | 'zh-CN';
+  mode?: 'inline' | 'files';
+  outDir?: string;
 }

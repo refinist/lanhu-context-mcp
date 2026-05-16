@@ -71,7 +71,12 @@ Qoder (global MCP service)
   "mcpServers": {
     "lanhu-context-mcp": {
       "command": "npx",
-      "args": ["-y", "lanhu-context-mcp"],
+      "args": [
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "/absolute/path/to/current-project"
+      ],
       "env": {
         "LANHU_TOKEN": "your_lanhu_token_here"
       }
@@ -82,7 +87,7 @@ Qoder (global MCP service)
 
 `Codex` needs one extra field here: set `cwd` to the absolute path of your current project. Because that path usually differs across developers, `.codex/config.toml` should usually stay local and not be committed to Git.
 
-From current testing, `Qoder` seems to support MCP services as a global configuration only, so it does not follow the project's `.env.local` automatically. Project-level configuration would be ideal if supported later; for now, put `LANHU_TOKEN` directly in the Qoder MCP service config.
+`Qoder` currently only supports global (user-level) MCP configuration, so the spawned server typically runs with `cwd = /` and fails when it tries to mkdir `.lanhu-context-mcp.local/`. The Qoder config above therefore must pass `--cwd` (or `env.CWD`) pointing to your project root, and also pass `LANHU_TOKEN` via `env` (stdio child processes do not inherit your shell env).
 
 **Windows**
 
@@ -134,7 +139,14 @@ Qoder (global MCP service)
   "mcpServers": {
     "lanhu-context-mcp": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "lanhu-context-mcp"],
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "C:\\absolute\\path\\to\\current-project"
+      ],
       "env": {
         "LANHU_TOKEN": "your_lanhu_token_here"
       }
@@ -168,6 +180,68 @@ You can write the prompt however you like, but the Lanhu URL must be complete an
 ## Ecosystem
 
 [Lanhu Helper](https://lanhu.refineup.com/en/ecosystem/lanhu-helper) — Companion Chrome extension for Lanhu. Right-click inside Lanhu to copy the selected layer's URL and ready-made prompts.
+
+## Contributing
+
+PRs and issues are welcome. Here is how to get the dev environment running.
+
+### 1. Install dependencies
+
+The repo is a pnpm workspace (with `playground` as a sub-package). From the repo root:
+
+```sh
+pnpm install
+```
+
+### 2. Prepare `.env.local`
+
+Copy the example file and drop the `.example` suffix, then fill in your credentials:
+
+```sh
+cp .env.local.example .env.local
+```
+
+Fields:
+
+| Field            | Required              | Purpose                                                                                                   |
+| ---------------- | --------------------- | --------------------------------------------------------------------------------------------------------- |
+| `LANHU_TOKEN`    | Yes                   | Token for calling the Lanhu API. See [how to get it](https://lanhu.refineup.com/en/guide/get-lanhu-token) |
+| `LANHU_TEST_URL` | For integration tests | A real, reachable Lanhu design detail URL the integration test harness will hit                           |
+
+### 3. Three-tier verification matrix
+
+Pick the tier that matches your change:
+
+| Tier               | Command                                                  | When                                                       | Requires                                               |
+| ------------------ | -------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------ |
+| Unit tests         | `pnpm test` / `pnpm test:coverage`                       | Every PR; coverage target is 100%                          | None                                                   |
+| Integration tests  | `pnpm test:integration` plus `:http` / `:stdio` variants | When touching services, tools, transports, or protocol     | `LANHU_TOKEN` + `LANHU_TEST_URL`                       |
+| End-to-end harness | See the playground section below                         | When changing output format, prompts, or on-disk artifacts | `LANHU_TOKEN` + any AI client wired to this MCP server |
+
+Finer-grained integration subsets (files mode only, stdio only, etc.) live under `test:integration:*` in `package.json`.
+
+### 4. playground — E2E verification harness
+
+`playground/` is a Vue 3 + Vite + Tailwind project used to exercise `get_design_context` end-to-end inside a **real MCP client** (Claude Code / Cursor / Codex / Qoder): you paste a Lanhu URL into the AI, it calls the MCP server against the real Lanhu API, the generated page lands under `src/pages/`, and you preview it live via the dev server — covering the layer that unit and integration tests cannot.
+
+Common commands:
+
+```sh
+# Start the playground dev server
+pnpm play
+
+# Reset the last run (pages under src/pages, sliced assets, and .lanhu-context-mcp.local/)
+pnpm play:clean
+```
+
+See [`playground/README.md`](./playground/README.md) for the detailed workflow and per-client setup.
+
+### 5. Pre-PR checklist
+
+- [ ] `pnpm typecheck` passes
+- [ ] `pnpm test` passes and coverage does not regress (verify with `pnpm test:coverage`)
+- [ ] `pnpm lint` passes
+- [ ] For changes that affect external behavior or output format, also run `pnpm test:integration:files` or verify in the playground against a real design
 
 ## License
 

@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DEFAULT_ENV_FILE, getServerConfig } from '../config.ts';
@@ -169,6 +169,81 @@ describe('getServerConfig transport mode', () => {
     expect(config.isHttpMode).toBe(true);
     expect(config.promptLang).toBe('en-US');
     expect(config.port).toBe(0);
+  });
+
+  test('--mode files sets config.mode to "files"', () => {
+    const config = loadConfig(['--mode', 'files']);
+    expect(config.mode).toBe('files');
+  });
+
+  test('MODE=inline env sets config.mode to "inline"', () => {
+    process.env.MODE = 'inline';
+    try {
+      const config = loadConfig();
+      expect(config.mode).toBe('inline');
+    } finally {
+      delete process.env.MODE;
+    }
+  });
+
+  test('unsupported MODE value falls back to undefined', () => {
+    const config = loadConfig(['--mode', 'bogus']);
+    expect(config.mode).toBeUndefined();
+  });
+
+  test('--out-dir sets config.outDir', () => {
+    const config = loadConfig(['--out-dir', '/tmp/custom-out']);
+    expect(config.outDir).toBe('/tmp/custom-out');
+  });
+
+  test('--cwd chdirs the process before resolving anything else', () => {
+    writeFileSync(join(tempDir, DEFAULT_ENV_FILE), 'LANHU_TOKEN=from-cwd-env');
+    setEnvValue('LANHU_TOKEN', undefined);
+    loadConfig(['--cwd', tempDir], { withEnvFileFlag: false });
+    // macOS resolves /var/folders/... to /private/var/folders/... — compare
+    // against the real path of the temp dir, not the dirent string.
+    expect(process.cwd()).toBe(realpathSync(tempDir));
+  });
+
+  test('CWD env chdirs when --cwd is not provided', () => {
+    process.env.CWD = tempDir;
+    try {
+      loadConfig();
+      expect(process.cwd()).toBe(realpathSync(tempDir));
+    } finally {
+      delete process.env.CWD;
+    }
+  });
+
+  test('--cwd wins over CWD env', () => {
+    const otherDir = mkdtempSync(join(tmpdir(), 'lanhu-context-other-'));
+    process.env.CWD = otherDir;
+    try {
+      loadConfig(['--cwd', tempDir]);
+      expect(process.cwd()).toBe(realpathSync(tempDir));
+    } finally {
+      delete process.env.CWD;
+      rmSync(otherDir, { recursive: true, force: true });
+    }
+  });
+
+  test('exits with a helpful error when --cwd target does not exist', () => {
+    const missing = join(tempDir, 'definitely-missing-dir');
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const processExit = vi.spyOn(process, 'exit').mockImplementation((() => {
+      throw new Error('EXIT');
+    }) as never);
+
+    expect(() => loadConfig(['--cwd', missing])).toThrow('EXIT');
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to chdir')
+    );
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining('--cwd or CWD')
+    );
+    expect(processExit).toHaveBeenCalledWith(1);
   });
 
   test('prints an error and exits when LANHU_TOKEN is missing', () => {

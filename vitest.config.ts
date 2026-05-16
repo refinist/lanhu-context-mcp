@@ -6,6 +6,7 @@ export default defineConfig({
     globals: true,
     testTimeout: 30_000,
     reporters: ['tree'],
+    globalSetup: ['./scripts/vitest-integration-setup.ts'],
     coverage: {
       provider: 'v8',
       reportsDirectory: './coverage',

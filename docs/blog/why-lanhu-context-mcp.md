@@ -1,5 +1,7 @@
 # Lanhu Context MCP: 把蓝湖设计稿整理成让 AI 生成代码还原页面的上下文
 
+<p style="color: var(--vp-c-text-2); font-size: 0.9em;">作者：REFINIST · 更新于 2026-04-24 15:55</p>
+
 ## 为什么会有 Lanhu Context MCP？
 
 蓝湖设计稿一直在很多团队里被广泛使用。蓝湖本身也有直接转代码的功能，效果并不差，但实际用下来还是会遇到几个比较现实的问题：

@@ -117,3 +117,104 @@ SKIP_SLICES=1
 ```
 
 :::
+
+## `cwd`
+
+显式覆盖 server 进程的工作目录。路径不存在或无权限时 server 启动阶段直接退出并打印清晰提示。
+
+何时使用：
+
+- 客户端只能在全局（用户级）配置 MCP，没有项目上下文，进程 cwd 通常会是 `/`，导致 `.env.local` 读不到、`.lanhu-context-mcp.local/` 写在根目录失败。**目前发现 Qoder 就是典型场景**
+- 你希望 `.env.local` 和 `.lanhu-context-mcp.local/` 锚定到特定项目根，而不是客户端启动时的目录
+
+示例：
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "lanhu-context-mcp",
+      "--cwd",
+      "/absolute/path/to/your-project"
+    ]
+  }
+}
+```
+
+```dotenv [.env.local]
+CWD=/absolute/path/to/your-project
+```
+
+:::
+
+## `mode`
+
+切换工具的产出形态，可选 `inline` 或 `files`。未指定时默认 `inline`。
+
+- `inline`（默认）：在 tool result 中直接返回全部内容——HTML / 切图映射 / Design Tokens / Guide / 预览图（base64）。
+- `files`：把上述内容打包成 `context.md`，配合 `preview.png`，写到 `<outDir>/<design-name>-<imageId8>/` 下，tool result 仅返回两个 `resource_link`。**适合大设计稿，规避部分 MCP 客户端的 tool 输出 token 上限（有些客户端不可调整）**。
+
+何时使用：
+
+- inline 模式下经常碰到 tool 输出被截断（部分 MCP 客户端会强制限制 tool 结果 token，例如 Claude Code 的 `MAX_MCP_OUTPUT_TOKENS` 默认 25000）
+- 你希望产物落到磁盘，便于检查或 AI 自己 Read 文件按需消费
+
+示例：
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": ["-y", "lanhu-context-mcp", "--mode", "files"]
+  }
+}
+```
+
+```dotenv [.env.local]
+MODE=files
+```
+
+:::
+
+## `out-dir`
+
+`mode=files` 下设计稿上下文文件的产出目录。默认是 `<cwd>/.lanhu-context-mcp.local`。
+
+`.local` 后缀沿用 Vite / Next.js 等约定，便于被通用的 gitignore 模板（`*.local`）自动屏蔽。
+
+何时使用：
+
+- 你希望产物落在指定路径，比如统一收纳到 `~/lanhu-output`
+- 你的 MCP 客户端工作目录不可预期（见上方 `cwd`），需要显式锚定输出位置
+
+示例：
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "lanhu-context-mcp",
+      "--mode",
+      "files",
+      "--out-dir",
+      "/Users/you/lanhu-output"
+    ]
+  }
+}
+```
+
+```dotenv [.env.local]
+OUT_DIR=/Users/you/lanhu-output
+```
+
+:::
