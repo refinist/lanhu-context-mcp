@@ -66,9 +66,42 @@ export function getServerConfig(): ServerConfig {
         type: String,
         description:
           'Path to a custom env file with LANHU_TOKEN and related settings'
+      },
+      cwd: {
+        type: String,
+        description:
+          'Override the working directory used for relative path resolution (env file, default out dir). Useful for clients that spawn the server globally without a project cwd (e.g. Qoder).'
+      },
+      mode: {
+        type: String,
+        description:
+          'Default output mode when AI does not pass one: inline | files'
+      },
+      outDir: {
+        type: String,
+        description:
+          'Default outDir when AI does not pass one (used in mode=files)'
       }
     }
   });
+
+  // Honor --cwd / CWD so global MCP clients without project context (e.g.
+  // Qoder) can still resolve relative paths against a real directory.
+  // Must run before env-file resolution and outDir resolution downstream.
+  const cwdOverride = argv.flags.cwd || process.env.CWD;
+  if (cwdOverride) {
+    const target = resolveRuntimePath(cwdOverride);
+    try {
+      process.chdir(target);
+    } catch (e) {
+      // process.chdir only throws standard Error instances (ENOENT/EACCES etc).
+      console.error(
+        `[config] Failed to chdir to "${target}": ${(e as Error).message}\n` +
+          '  Provide a valid absolute path via --cwd or CWD.'
+      );
+      process.exit(1);
+    }
+  }
 
   // Load the selected env file before reading env vars.
   const envFilePath = argv.flags.envFile
@@ -108,6 +141,12 @@ export function getServerConfig(): ServerConfig {
   const host = argv.flags.host || process.env.HOST || '127.0.0.1';
   const isHttpMode = !isStdioMode;
 
+  const rawMode = argv.flags.mode || process.env.MODE || '';
+  const mode: 'inline' | 'files' | undefined =
+    rawMode === 'inline' || rawMode === 'files' ? rawMode : undefined;
+  const outDirRaw = argv.flags.outDir || process.env.OUT_DIR || '';
+  const outDir = outDirRaw.trim() || undefined;
+
   if (!lanhuToken) {
     console.error(
       '[config] LANHU_TOKEN is required.\n' +
@@ -129,7 +168,9 @@ export function getServerConfig(): ServerConfig {
     tailwindcss,
     skipSlices,
     unitScale,
-    promptLang
+    promptLang,
+    mode,
+    outDir
   };
 }
 

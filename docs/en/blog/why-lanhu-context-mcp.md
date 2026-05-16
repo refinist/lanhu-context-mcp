@@ -1,5 +1,7 @@
 # Lanhu Context MCP: Turning Lanhu Designs into Context for AI to Generate Code and Recreate Pages
 
+<p style="color: var(--vp-c-text-2); font-size: 0.9em;">Author: REFINIST · Updated 2026-04-24 15:55</p>
+
 ## Why Build Lanhu Context MCP?
 
 Lanhu designs are still widely used across many teams. Lanhu already ships its own design-to-code output, and the results are not bad, but in practice there are still a few recurring problems:

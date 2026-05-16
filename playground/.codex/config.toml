@@ -1,0 +1,4 @@
+[mcp_servers.lanhu-context-mcp-dev]
+cwd = "/Users/jeff/refinist/mcp/lanhu-context-mcp/playground"
+command = "../dist/run.mjs"
+args = ["--tailwindcss"]

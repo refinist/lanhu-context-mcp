@@ -10,6 +10,12 @@ import {
 import { convertHtmlToTailwind } from '../utils/css-to-tailwind.ts';
 import { extractDesignTokens } from '../utils/design-tokens.ts';
 import {
+  writeDesignFiles,
+  type FileDeliveryResult,
+  type FileInfo
+} from '../utils/file-delivery.ts';
+import { resolveOutDir } from '../utils/out-dir.ts';
+import {
   convertLanhuToHtml,
   localizeImageUrls
 } from '../utils/schema-to-html.ts';
@@ -18,6 +24,16 @@ import { parseLanhuUrl } from '../utils/url-parser.ts';
 import type { ServerConfig } from '../types/config.ts';
 import type { DesignMeta, LanhuUrlParams } from '../types/lanhu.ts';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+
+type ContentItem =
+  | { type: 'text'; text: string }
+  | { type: 'image'; data: string; mimeType: string }
+  | {
+      type: 'resource_link';
+      uri: string;
+      name: string;
+      mimeType: string;
+    };
 
 export function registerGetDesignContext({
   server,
@@ -76,16 +92,15 @@ export function registerGetDesignContext({
         };
       }
 
-      const content: Array<
-        | { type: 'text'; text: string }
-        | { type: 'image'; data: string; mimeType: string }
-      > = [];
-
       // Build the main HTML output from the DDS schema and optionally localize image assets.
+      let htmlCode: string;
+      let htmlLabel: string;
+      let mappingEntries: Array<[string, string]> | undefined;
+      let mappingText: string | undefined;
       try {
         const schemaJson = await getDesignSchemaJson(designRequest);
 
-        let htmlCode = convertLanhuToHtml(schemaJson, config.unitScale);
+        htmlCode = convertLanhuToHtml(schemaJson, config.unitScale);
         const localized = config.skipSlices
           ? null
           : localizeImageUrls(htmlCode, design.name);
@@ -95,23 +110,18 @@ export function registerGetDesignContext({
           htmlCode = await convertHtmlToTailwind(htmlCode);
         }
 
-        const htmlLabel = config.tailwindcss
+        htmlLabel = config.tailwindcss
           ? p.HTML_CODE_LABEL_TAILWIND
           : p.HTML_CODE_LABEL;
-        content.push({
-          type: 'text',
-          text: `${htmlLabel}${htmlCode}`
-        });
 
         if (localized && Object.keys(localized.mapping).length > 0) {
-          const entries = Object.entries(localized.mapping);
-          const curlLines = entries
+          mappingEntries = Object.entries(localized.mapping) as Array<
+            [string, string]
+          >;
+          const curlLines = mappingEntries
             .map(([l, r]) => `  curl -o "${l}" "${r}"`)
             .join('\n');
-          content.push({
-            type: 'text',
-            text: p.imageMappingText(entries.length, curlLines)
-          });
+          mappingText = p.imageMappingText(mappingEntries.length, curlLines);
         }
       } catch (e) {
         return {
@@ -131,17 +141,15 @@ export function registerGetDesignContext({
       }
 
       // Extract sketch-based design tokens as an extra reference block when available.
+      let designTokens: string | undefined;
       try {
         const sketchJson = await getSketchJson(designRequest);
-        const designTokens = extractDesignTokens(sketchJson);
-        if (designTokens) {
-          content.push({
-            type: 'text',
-            text: `${p.DESIGN_TOKENS_HEADER}\n${designTokens
-              .split('\n')
-              .map(l => `  ${l}`)
-              .join('\n')}`
-          });
+        const tokens = extractDesignTokens(sketchJson);
+        if (tokens) {
+          designTokens = `${p.DESIGN_TOKENS_HEADER}\n${tokens
+            .split('\n')
+            .map(l => `  ${l}`)
+            .join('\n')}`;
         }
       } catch (e) {
         return {
@@ -160,21 +168,13 @@ export function registerGetDesignContext({
         };
       }
 
-      // Append the final implementation guidance after the generated assets.
-      content.push({
-        type: 'text',
-        text: p.guideText(design.projectName, design.name)
-      });
+      const guideText = p.guideText(design.projectName, design.name);
 
       // Attach the design preview image when the source payload exposes one.
+      let previewBuffer: Buffer | undefined;
       if (design.url) {
         try {
-          const imgBuffer = await downloadImage({ imgUrl: design.url });
-          content.push({
-            type: 'image',
-            data: imgBuffer.toString('base64'),
-            mimeType: 'image/png'
-          });
+          previewBuffer = await downloadImage({ imgUrl: design.url });
         } catch (e) {
           return {
             isError: true,
@@ -193,7 +193,86 @@ export function registerGetDesignContext({
         }
       }
 
+      const resolvedMode = config.mode ?? 'inline';
+
+      if (resolvedMode === 'files') {
+        const resolved = resolveOutDir(config.outDir);
+
+        // Same content blocks inline emits, joined into a single markdown bundle.
+        const bundleBlocks: string[] = [`${htmlLabel}${htmlCode}`];
+        if (mappingText) bundleBlocks.push(mappingText);
+        if (designTokens) bundleBlocks.push(designTokens);
+        bundleBlocks.push(guideText);
+        const contextBody = bundleBlocks.join('\n\n');
+
+        let result: FileDeliveryResult;
+        try {
+          result = await writeDesignFiles({
+            outDir: resolved.path,
+            imageId,
+            designName: design.name,
+            contextBody,
+            previewBuffer
+          });
+        } catch (e) {
+          return {
+            isError: true,
+            content: [
+              {
+                type: 'text',
+                text: formatStopError(
+                  e instanceof Error ? e.message : String(e),
+                  p.ERROR_STOP_INSTRUCTION
+                )
+              }
+            ]
+          };
+        }
+
+        const content: ContentItem[] = [];
+        pushResourceLink(content, result.files.context, 'context.md');
+        if (result.files.preview) {
+          pushResourceLink(content, result.files.preview, 'preview.png');
+        }
+
+        return { content };
+      }
+
+      // Default (inline) path — preserves the original content layout exactly.
+      const content: ContentItem[] = [];
+      content.push({
+        type: 'text',
+        text: `${htmlLabel}${htmlCode}`
+      });
+      if (mappingText) {
+        content.push({ type: 'text', text: mappingText });
+      }
+      if (designTokens) {
+        content.push({ type: 'text', text: designTokens });
+      }
+      content.push({ type: 'text', text: guideText });
+      if (previewBuffer) {
+        content.push({
+          type: 'image',
+          data: previewBuffer.toString('base64'),
+          mimeType: 'image/png'
+        });
+      }
+
       return { content };
     }
   );
+}
+
+function pushResourceLink(
+  content: ContentItem[],
+  file: FileInfo,
+  name: string
+): void {
+  content.push({
+    type: 'resource_link',
+    uri: file.uri,
+    name,
+    mimeType: file.mimeType
+  });
 }

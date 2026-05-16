@@ -71,7 +71,12 @@ Qoder（全局 MCP 服务）
   "mcpServers": {
     "lanhu-context-mcp": {
       "command": "npx",
-      "args": ["-y", "lanhu-context-mcp"],
+      "args": [
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "/absolute/path/to/current-project"
+      ],
       "env": {
         "LANHU_TOKEN": "your_lanhu_token_here"
       }
@@ -82,7 +87,7 @@ Qoder（全局 MCP 服务）
 
 `Codex` 的 MCP 配置比较特殊，需要额外设置 `cwd`，并把它填写为当前项目的绝对路径。由于这个路径通常因人而异，通常不建议把 `.codex/config.toml` 提交到 Git，建议做好 Git 排除并由每位开发者在本地自行维护。
 
-目前观察下来，`Qoder` 好像只能在全局配置 MCP 服务，暂时不能像项目内 `.env.local` 那样跟随项目切换。如果后续能跟随项目配置会更理想；现阶段建议在 Qoder 的 MCP 服务配置里同时写入 `LANHU_TOKEN`。
+`Qoder` 目前只能在全局（用户级）配置 MCP，进程的工作目录通常是 `/`，会导致写入 `.lanhu-context-mcp.local/` 时因为没有权限直接报错。所以 Qoder 配置里必须显式指定 `--cwd`（或 `env.CWD`）把工作目录切到项目根，同时通过 `env` 传入 `LANHU_TOKEN`（stdio 子进程不会继承 shell 环境变量）。
 
 **Windows**
 
@@ -134,7 +139,14 @@ Qoder（全局 MCP 服务）
   "mcpServers": {
     "lanhu-context-mcp": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "lanhu-context-mcp"],
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "C:\\absolute\\path\\to\\current-project"
+      ],
       "env": {
         "LANHU_TOKEN": "your_lanhu_token_here"
       }
@@ -168,6 +180,68 @@ https://lanhuapp.com/web/#/item/project/detailDetach?tid={tid}&pid={pid}&project
 ## 生态
 
 [Lanhu Helper](https://lanhu.refineup.com/ecosystem/lanhu-helper) — 配套的蓝湖 Chrome 浏览器扩展，可以从蓝湖右键复制选中图层链接和示例提示词
+
+## 参与开发
+
+欢迎提交 PR 或 issue。下面是把开发环境跑起来的流程。
+
+### 1. 安装依赖
+
+仓库使用 pnpm workspace（含 `playground` 子包），在根目录执行：
+
+```sh
+pnpm install
+```
+
+### 2. 准备 `.env.local`
+
+复制示例文件，再去掉 `.example` 后缀填入凭据：
+
+```sh
+cp .env.local.example .env.local
+```
+
+字段说明：
+
+| 字段             | 必填           | 用途                                                                                       |
+| ---------------- | -------------- | ------------------------------------------------------------------------------------------ |
+| `LANHU_TOKEN`    | 是             | 调用蓝湖 API 的 Token，获取方式见 [这里](https://lanhu.refineup.com/guide/get-lanhu-token) |
+| `LANHU_TEST_URL` | 跑集成测试时填 | 一条真实可访问的蓝湖设计稿详情链接，集成测试会向它发请求                                   |
+
+### 3. 三层验证矩阵
+
+不同改动建议跑不同层级的验证：
+
+| 层级           | 命令                                             | 何时跑                                  | 依赖                                      |
+| -------------- | ------------------------------------------------ | --------------------------------------- | ----------------------------------------- |
+| 单元测试       | `pnpm test` / `pnpm test:coverage`               | 任何 PR 必过；目标覆盖率 100%           | 无                                        |
+| 集成测试       | `pnpm test:integration` 及其 `:http/:stdio` 变体 | 改服务、工具、transport、协议层时建议跑 | `LANHU_TOKEN` + `LANHU_TEST_URL`          |
+| 端到端验证场地 | 见下方 playground 一节                           | 改输出格式、提示词、文件落盘逻辑时手测  | `LANHU_TOKEN` + 任何接入 MCP 的 AI 客户端 |
+
+集成测试更细的子集（仅 files 模式、仅 stdio 等）在 `package.json` 的 `test:integration:*` 脚本里。
+
+### 4. playground — 端到端验证场地（E2E verification harness）
+
+`playground/` 是一个 Vue 3 + Vite + Tailwind 工程，专门用来在**真实 MCP 客户端**（Claude Code / Cursor / Codex / Qoder）里跑实际蓝湖 API、把生成的页面落到 `src/pages/`、并通过 dev server 实时预览——验证 `get_design_context` 整条链路的真实行为，是单元/集成测试覆盖不到的层面。
+
+常用命令：
+
+```sh
+# 启动 playground dev server
+pnpm play
+
+# 清理上一轮产物（src/pages 内页面 + src/assets 内切图 + .lanhu-context-mcp.local 目录）
+pnpm play:clean
+```
+
+详细工作流和客户端配置看 [`playground/README.md`](./playground/README.md)。
+
+### 5. 提 PR 前的检查清单
+
+- [ ] `pnpm typecheck` 通过
+- [ ] `pnpm test` 通过且覆盖率不下降（运行 `pnpm test:coverage` 确认）
+- [ ] `pnpm lint` 通过
+- [ ] 涉及对外行为或产出格式的改动，至少跑一次 `pnpm test:integration:files` 或在 playground 里实际验收
 
 ## License
 

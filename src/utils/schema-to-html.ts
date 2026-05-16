@@ -165,7 +165,7 @@ function generateHtml(
       node.uiType === 'InputArea' &&
       !/item\.(?:specialSlot\d+\.)?lanhutext\d+/.test(text)
     ) {
-      const placeholder = String(node.uiTypeProb?.placeholder ?? text ?? '');
+      const placeholder = String(node.uiTypeProb?.placeholder ?? text);
       const w = node.style?.width ?? node.props?.style?.width;
       const h = node.style?.height ?? node.props?.style?.height;
       const inlineStyle =

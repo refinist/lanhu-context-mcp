@@ -118,3 +118,104 @@ Example:
 ```
 
 :::
+
+## `cwd`
+
+Override the server process' working directory. The server exits early with a clear message if the path does not exist or is not accessible.
+
+When to use:
+
+- the client only supports global (user-level) MCP configuration, so the server is spawned without project context and `process.cwd()` is typically `/`, breaking both `.env.local` lookup and the default `.lanhu-context-mcp.local/` write. **As of writing, Qoder is the canonical case.**
+- you want `.env.local` and `.lanhu-context-mcp.local/` anchored to a specific project root, not wherever the client happened to launch from
+
+Example:
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "lanhu-context-mcp",
+      "--cwd",
+      "/absolute/path/to/your-project"
+    ]
+  }
+}
+```
+
+```dotenv [.env.local]
+CWD=/absolute/path/to/your-project
+```
+
+:::
+
+## `mode`
+
+Switches the tool output shape. Either `inline` or `files`. Defaults to `inline`.
+
+- `inline` (default): everything is returned in the tool result — HTML, asset mapping, design tokens, guide, preview image (base64).
+- `files`: the same content is packed into a single `context.md` (plus `preview.png`) under `<outDir>/<design-name>-<imageId8>/`, and the tool result returns only two `resource_link` entries. **Best for large designs and for sidestepping the tool-result token cap enforced by some MCP clients (not always user-tunable).**
+
+When to use:
+
+- you keep hitting tool-result truncation in inline mode (some clients enforce a hard cap on MCP tool output — e.g. Claude Code's `MAX_MCP_OUTPUT_TOKENS` defaults to 25000)
+- you want artifacts on disk so you (or the AI) can inspect / Read them on demand
+
+Example:
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": ["-y", "lanhu-context-mcp", "--mode", "files"]
+  }
+}
+```
+
+```dotenv [.env.local]
+MODE=files
+```
+
+:::
+
+## `out-dir`
+
+The artifacts directory where files-mode output lands. Defaults to `<cwd>/.lanhu-context-mcp.local`.
+
+The `.local` suffix follows the Vite / Next.js convention so that common gitignore templates (`*.local`) exclude these artifacts automatically.
+
+When to use:
+
+- you want artifacts in a specific location, e.g. consolidated under `~/lanhu-output`
+- your MCP client's working directory is unpredictable (see `cwd` above) and you want to anchor output explicitly
+
+Example:
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "lanhu-context-mcp",
+      "--mode",
+      "files",
+      "--out-dir",
+      "/Users/you/lanhu-output"
+    ]
+  }
+}
+```
+
+```dotenv [.env.local]
+OUT_DIR=/Users/you/lanhu-output
+```
+
+:::
