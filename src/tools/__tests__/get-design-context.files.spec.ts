@@ -2,6 +2,7 @@
 import { access, mkdtemp, readFile, rm, stat } from 'fs/promises';
 import { tmpdir } from 'os';
 import { resolve as resolvePath } from 'path';
+import { fileURLToPath } from 'url';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as lanhuApi from '../../services/lanhu-api.ts';
 import * as designTokens from '../../utils/design-tokens.ts';
@@ -162,8 +163,11 @@ describe('get_design_context — mode=files', () => {
     const links = content.filter(c => c.type === 'resource_link') as Array<{
       uri: string;
     }>;
+    // Compare via OS-native path: link.uri is a file:// URI with forward
+    // slashes and percent-encoding, while tmpRoot is OS-native (backslashes
+    // on Windows). fileURLToPath normalizes both sides.
     for (const link of links) {
-      expect(link.uri).toContain(tmpRoot);
+      expect(fileURLToPath(link.uri)).toContain(tmpRoot);
     }
   });
 
@@ -180,8 +184,9 @@ describe('get_design_context — mode=files', () => {
     }>;
     expect(links.length).toBeGreaterThan(0);
     for (const link of links) {
-      expect(link.uri).toContain('.lanhu-context-mcp.local');
-      expect(link.uri).toContain(tmpRoot);
+      const linkPath = fileURLToPath(link.uri);
+      expect(linkPath).toContain('.lanhu-context-mcp.local');
+      expect(linkPath).toContain(tmpRoot);
     }
     cwdSpy.mockRestore();
   });
