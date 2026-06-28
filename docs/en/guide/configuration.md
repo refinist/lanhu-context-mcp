@@ -125,7 +125,7 @@ Override the server process' working directory. The server exits early with a cl
 
 When to use:
 
-- the client only supports global (user-level) MCP configuration, so the server is spawned without project context and `process.cwd()` is typically `/`, breaking both `.env.local` lookup and the default `.lanhu-context-mcp.local/` write. **As of writing, Qoder is the canonical case.**
+- the client spawns the MCP child process with a working directory that does not point at the current project (`process.cwd()` is typically `/` or the client's launch directory), breaking both `.env.local` lookup and the default `.lanhu-context-mcp.local/` write. **As of writing, TRAE / Codex / Qoder all require passing it explicitly.**
 - you want `.env.local` and `.lanhu-context-mcp.local/` anchored to a specific project root, not wherever the client happened to launch from
 
 Example:
@@ -148,6 +148,15 @@ Example:
 
 ```dotenv [.env.local]
 CWD=/absolute/path/to/your-project
+```
+
+:::
+
+::: tip No need to hardcode the path
+Editors that support variable substitution (VSCode and friends) can use a built-in variable instead of an absolute path, so the config is shareable across the team and nobody has to edit it by hand:
+
+```json
+"args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
 ```
 
 :::

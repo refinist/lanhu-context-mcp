@@ -36,13 +36,6 @@ LANHU_TOKEN=your_lanhu_token_here
 
 ::: code-group
 
-```toml [Codex（.codex/config.toml）]
-[mcp_servers.lanhu-context-mcp]
-cwd = "/absolute/path/to/current-project"
-command = "npx"
-args = ["-y", "lanhu-context-mcp"]
-```
-
 ```json [Claude Code（.mcp.json）]
 {
   "mcpServers": {
@@ -65,6 +58,24 @@ args = ["-y", "lanhu-context-mcp"]
 }
 ```
 
+```json [TRAE（.trae/mcp.json）]
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+```toml [Codex（.codex/config.toml）]
+[mcp_servers.lanhu-context-mcp]
+cwd = "/absolute/path/to/current-project"
+command = "npx"
+args = ["-y", "lanhu-context-mcp"]
+```
+
 ```json [Qoder（全局 MCP 服务）]
 {
   "mcpServers": {
@@ -81,6 +92,10 @@ args = ["-y", "lanhu-context-mcp"]
 
 :::
 
+::: warning TRAE
+`TRAE` 存在一个设计问题：MCP 子进程的工作目录不会指向当前项目，导致 `.env.local` 读不到、`.lanhu-context-mcp.local/` 写入异常。所以 TRAE 配置里必须固定传入 `--cwd` 参数；值用编辑器内置变量 `${workspaceFolder}` 即可自动指向项目根，无需写死绝对路径。
+:::
+
 ::: warning Codex
 `Codex` 的 MCP 配置比较特殊，需要额外设置 `cwd`，并把它填写为当前项目的绝对路径。由于这个路径通常因人而异，通常不建议把 `.codex/config.toml` 提交到 Git，建议做好 Git 排除并由每位开发者在本地自行维护。
 :::
@@ -94,28 +109,6 @@ args = ["-y", "lanhu-context-mcp"]
 如果在 Windows 下直接使用上面的 `npx` 配置启动失败，可以改用下面的写法：
 
 ::: code-group
-
-```toml [Codex（WSL2）]
-[mcp_servers.lanhu-context-mcp]
-cwd = "/absolute/path/to/current-project"
-command = "npx"
-args = ["-y", "lanhu-context-mcp"]
-```
-
-```toml [Codex（原生）]
-[mcp_servers.lanhu-context-mcp]
-cwd = "C:\\absolute\\path\\to\\current-project"
-command = "C:\\Program Files\\nodejs\\npx.cmd"
-args = ["-y", "lanhu-context-mcp"]
-
-[mcp_servers.lanhu-context-mcp.env]
-APPDATA = "C:\\Users\\{your-name}\\AppData\\Roaming"
-LOCALAPPDATA = "C:\\Users\\{your-name}\\AppData\\Local"
-USERPROFILE = "C:\\Users\\{your-name}"
-HOME = "C:\\Users\\{your-name}"
-SYSTEMROOT = "C:\\Windows"
-COMSPEC = "C:\\Windows\\System32\\cmd.exe"
-```
 
 ```json [Claude Code]
 {
@@ -137,6 +130,46 @@ COMSPEC = "C:\\Windows\\System32\\cmd.exe"
     }
   }
 }
+```
+
+```json [TRAE]
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "${workspaceFolder}"
+      ]
+    }
+  }
+}
+```
+
+```toml [Codex（WSL2）]
+[mcp_servers.lanhu-context-mcp]
+cwd = "/absolute/path/to/current-project"
+command = "npx"
+args = ["-y", "lanhu-context-mcp"]
+```
+
+```toml [Codex（原生）]
+[mcp_servers.lanhu-context-mcp]
+cwd = "C:\\absolute\\path\\to\\current-project"
+command = "C:\\Program Files\\nodejs\\npx.cmd"
+args = ["-y", "lanhu-context-mcp"]
+
+[mcp_servers.lanhu-context-mcp.env]
+APPDATA = "C:\\Users\\{your-name}\\AppData\\Roaming"
+LOCALAPPDATA = "C:\\Users\\{your-name}\\AppData\\Local"
+USERPROFILE = "C:\\Users\\{your-name}"
+HOME = "C:\\Users\\{your-name}"
+SYSTEMROOT = "C:\\Windows"
+COMSPEC = "C:\\Windows\\System32\\cmd.exe"
 ```
 
 ```json [Qoder]

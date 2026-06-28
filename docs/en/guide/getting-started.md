@@ -36,13 +36,6 @@ Add the matching MCP config to the corresponding file for your client. For Qoder
 
 ::: code-group
 
-```toml [Codex (.codex/config.toml)]
-[mcp_servers.lanhu-context-mcp]
-cwd = "/absolute/path/to/current-project"
-command = "npx"
-args = ["-y", "lanhu-context-mcp"]
-```
-
 ```json [Claude Code (.mcp.json)]
 {
   "mcpServers": {
@@ -65,6 +58,24 @@ args = ["-y", "lanhu-context-mcp"]
 }
 ```
 
+```json [TRAE (.trae/mcp.json)]
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+```toml [Codex (.codex/config.toml)]
+[mcp_servers.lanhu-context-mcp]
+cwd = "/absolute/path/to/current-project"
+command = "npx"
+args = ["-y", "lanhu-context-mcp"]
+```
+
 ```json [Qoder (global MCP service)]
 {
   "mcpServers": {
@@ -81,6 +92,10 @@ args = ["-y", "lanhu-context-mcp"]
 
 :::
 
+::: warning TRAE
+`TRAE` has a design quirk: the MCP child process's working directory does not point at the current project, so `.env.local` is not found and writes to `.lanhu-context-mcp.local/` fail. You must therefore always pass `--cwd` in the TRAE config; use the editor's built-in `${workspaceFolder}` variable to point at the project root automatically, with no hardcoded absolute path.
+:::
+
 ::: warning Codex
 `Codex` is a bit special here: set `cwd` to the absolute path of your current project. Because this path usually differs across developers, `.codex/config.toml` should usually be excluded from Git and maintained locally by each developer.
 :::
@@ -94,28 +109,6 @@ From current testing, `Qoder` seems to support MCP services as a global configur
 If the `npx` config above fails to start on Windows, use the following fallback:
 
 ::: code-group
-
-```toml [Codex (WSL2)]
-[mcp_servers.lanhu-context-mcp]
-cwd = "/absolute/path/to/current-project"
-command = "npx"
-args = ["-y", "lanhu-context-mcp"]
-```
-
-```toml [Codex (Native)]
-[mcp_servers.lanhu-context-mcp]
-cwd = "C:\\absolute\\path\\to\\current-project"
-command = "C:\\Program Files\\nodejs\\npx.cmd"
-args = ["-y", "lanhu-context-mcp"]
-
-[mcp_servers.lanhu-context-mcp.env]
-APPDATA = "C:\\Users\\{your-name}\\AppData\\Roaming"
-LOCALAPPDATA = "C:\\Users\\{your-name}\\AppData\\Local"
-USERPROFILE = "C:\\Users\\{your-name}"
-HOME = "C:\\Users\\{your-name}"
-SYSTEMROOT = "C:\\Windows"
-COMSPEC = "C:\\Windows\\System32\\cmd.exe"
-```
 
 ```json [Claude Code]
 {
@@ -137,6 +130,46 @@ COMSPEC = "C:\\Windows\\System32\\cmd.exe"
     }
   }
 }
+```
+
+```json [TRAE]
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "${workspaceFolder}"
+      ]
+    }
+  }
+}
+```
+
+```toml [Codex (WSL2)]
+[mcp_servers.lanhu-context-mcp]
+cwd = "/absolute/path/to/current-project"
+command = "npx"
+args = ["-y", "lanhu-context-mcp"]
+```
+
+```toml [Codex (Native)]
+[mcp_servers.lanhu-context-mcp]
+cwd = "C:\\absolute\\path\\to\\current-project"
+command = "C:\\Program Files\\nodejs\\npx.cmd"
+args = ["-y", "lanhu-context-mcp"]
+
+[mcp_servers.lanhu-context-mcp.env]
+APPDATA = "C:\\Users\\{your-name}\\AppData\\Roaming"
+LOCALAPPDATA = "C:\\Users\\{your-name}\\AppData\\Local"
+USERPROFILE = "C:\\Users\\{your-name}"
+HOME = "C:\\Users\\{your-name}"
+SYSTEMROOT = "C:\\Windows"
+COMSPEC = "C:\\Windows\\System32\\cmd.exe"
 ```
 
 ```json [Qoder]

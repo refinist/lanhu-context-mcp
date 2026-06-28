@@ -56,6 +56,22 @@
 
 server 一启动就 `process.chdir` 到指定路径，然后所有下游逻辑（`.env.local` 读取、`.lanhu-context-mcp.local/` 写入）都自然走 cwd-relative 路径，跟项目级 MCP 配置的行为完全一致。token 还是放在你项目根的 `.env.local` 里，配置文件干净，新增配置项也不用动 MCP 配置。
 
+::: tip 不用写死绝对路径
+这里的 `--cwd` 不用写死成绝对路径。支持变量替换的编辑器（如 VSCode 系）可以直接用内置变量，配置就能在团队间复用、也不必每人手改路径：
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+:::
+
 ## Issue #5：tool 输出超过 102.8KB
 
 第二条反馈来自 [#5 token 上限(102.8KB)](https://github.com/refinist/lanhu-context-mcp/issues/5)。

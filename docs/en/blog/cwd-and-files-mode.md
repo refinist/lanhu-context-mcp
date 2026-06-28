@@ -56,6 +56,22 @@ The most direct fix is to put the token straight into the MCP config's `env` fie
 
 On startup, the server `process.chdir`s into the given path. Every downstream lookup — `.env.local`, `.lanhu-context-mcp.local/`, anything else cwd-relative — then behaves exactly the same as it would under a project-level MCP config. Your token stays in `.env.local`, your MCP config stays small, and future settings don't need to be migrated into the `env` field one by one.
 
+::: tip No need to hardcode the path
+`--cwd` doesn't have to be a hardcoded absolute path. Editors that support variable substitution (VSCode and friends) can use a built-in variable instead, so the config is shareable across the team and nobody has to edit the path by hand:
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+:::
+
 ## Issue #5: tool output exceeds 102.8KB
 
 The second report is [#5 token 上限(102.8KB)](https://github.com/refinist/lanhu-context-mcp/issues/5) (token cap at 102.8KB).

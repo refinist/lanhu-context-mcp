@@ -89,6 +89,8 @@ Qoder (global MCP service)
 
 `Qoder` currently only supports global (user-level) MCP configuration, so the spawned server typically runs with `cwd = /` and fails when it tries to mkdir `.lanhu-context-mcp.local/`. The Qoder config above therefore must pass `--cwd` (or `env.CWD`) pointing to your project root, and also pass `LANHU_TOKEN` via `env` (stdio child processes do not inherit your shell env).
 
+`--cwd` doesn't have to be a hardcoded absolute path. Editors that support variable substitution (VSCode and friends) can use a built-in variable instead, so the config is shareable across the team and nobody has to edit the path by hand: `"--cwd", "${workspaceFolder}"`.
+
 **Windows**
 
 If the `npx` config above fails to start on Windows, use the following fallback:
