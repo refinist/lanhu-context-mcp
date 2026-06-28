@@ -102,6 +102,7 @@
 .vp-code-group .tabs label[data-title^='Cursor']::before,
 .vp-code-group .tabs label[data-title^='Qoder']::before,
 .vp-code-group .tabs label[data-title^='Claude Code']::before,
+.vp-code-group .tabs label[data-title^='TRAE']::before,
 .vp-code-group .tabs label[data-title^='Codex']::before {
   display: inline-block;
   width: 14px;
@@ -124,6 +125,10 @@
 
 .vp-code-group .tabs label[data-title^='Claude Code']::before {
   background-image: url('/icons/claude-code.svg');
+}
+
+.vp-code-group .tabs label[data-title^='TRAE']::before {
+  background-image: url('/icons/trae.png');
 }
 
 .vp-code-group .tabs label[data-title^='Codex']::before {

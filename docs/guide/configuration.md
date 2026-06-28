@@ -124,7 +124,7 @@ SKIP_SLICES=1
 
 何时使用：
 
-- 客户端只能在全局（用户级）配置 MCP，没有项目上下文，进程 cwd 通常会是 `/`，导致 `.env.local` 读不到、`.lanhu-context-mcp.local/` 写在根目录失败。**目前发现 Qoder 就是典型场景**
+- 客户端的 MCP 子进程工作目录不指向当前项目（进程 cwd 通常是 `/` 或客户端启动目录），导致 `.env.local` 读不到、`.lanhu-context-mcp.local/` 写入失败。**目前发现 TRAE / Codex / Qoder 都需要显式传入**
 - 你希望 `.env.local` 和 `.lanhu-context-mcp.local/` 锚定到特定项目根，而不是客户端启动时的目录
 
 示例：
@@ -147,6 +147,15 @@ SKIP_SLICES=1
 
 ```dotenv [.env.local]
 CWD=/absolute/path/to/your-project
+```
+
+:::
+
+::: tip 不用写死绝对路径
+支持变量替换的编辑器（如 VSCode 系）可以用内置变量代替绝对路径，配置就能在团队间复用、也不必每人手改：
+
+```json
+"args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
 ```
 
 :::

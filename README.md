@@ -89,6 +89,8 @@ Qoder（全局 MCP 服务）
 
 `Qoder` 目前只能在全局（用户级）配置 MCP，进程的工作目录通常是 `/`，会导致写入 `.lanhu-context-mcp.local/` 时因为没有权限直接报错。所以 Qoder 配置里必须显式指定 `--cwd`（或 `env.CWD`）把工作目录切到项目根，同时通过 `env` 传入 `LANHU_TOKEN`（stdio 子进程不会继承 shell 环境变量）。
 
+`--cwd` 不用写死成绝对路径。支持变量替换的编辑器（如 VSCode 系）可以直接用内置变量，配置就能在团队间复用、也不必每人手改路径：`"--cwd", "${workspaceFolder}"`。
+
 **Windows**
 
 如果在 Windows 下直接使用上面的 `npx` 配置启动失败，可以改用下面的写法：
