@@ -13,6 +13,7 @@
 - 🧱 补充 `Design Tokens` 和设计预览图，方便下游模型继续实现和视觉校验
 - 🧭 附带面向下游 AI 的实现指引，明确优先级、适配方式和约束条件
 - ⚙️ 支持通过 CLI 参数和环境变量配置 `Tailwind` 输出、跳过切图、单位缩放和提示语言
+- 📦 提供 `inline` / `files` 两种产出模式：默认 `inline` 直接在 tool result 返回全部内容；`files` 把 HTML、切图映射、Design Tokens、Guide 打包成 `context.md` + `preview.png` 落盘并只回传 `resource_link`，规避大设计稿命中 MCP 客户端 tool 输出 token 上限（例如 Claude Code 默认 `MAX_MCP_OUTPUT_TOKENS=25000`）的截断问题
 
 ## 文档
 
@@ -42,15 +43,6 @@ LANHU_TOKEN=your_lanhu_token_here
 
 把下面对应客户端的 MCP 配置写入对应文件；如果使用 Qoder，在 MCP 服务页点击“添加”后粘贴配置：
 
-Codex（.codex/config.toml）
-
-```toml
-[mcp_servers.lanhu-context-mcp]
-cwd = "/absolute/path/to/current-project"
-command = "npx"
-args = ["-y", "lanhu-context-mcp"]
-```
-
 Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
 
 ```json
@@ -62,6 +54,28 @@ Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
     }
   }
 }
+```
+
+TRAE（.trae/mcp.json）
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+Codex（.codex/config.toml）
+
+```toml
+[mcp_servers.lanhu-context-mcp]
+cwd = "/absolute/path/to/current-project"
+command = "npx"
+args = ["-y", "lanhu-context-mcp"]
 ```
 
 Qoder（全局 MCP 服务）
@@ -85,6 +99,8 @@ Qoder（全局 MCP 服务）
 }
 ```
 
+`TRAE` 存在一个设计问题：MCP 子进程的工作目录不会指向当前项目，导致 `.env.local` 读不到、`.lanhu-context-mcp.local/` 写入异常。所以 TRAE 配置里必须固定传入 `--cwd` 参数；值用编辑器内置变量 `${workspaceFolder}` 即可自动指向项目根，无需写死绝对路径。
+
 `Codex` 的 MCP 配置比较特殊，需要额外设置 `cwd`，并把它填写为当前项目的绝对路径。由于这个路径通常因人而异，通常不建议把 `.codex/config.toml` 提交到 Git，建议做好 Git 排除并由每位开发者在本地自行维护。
 
 `Qoder` 目前只能在全局（用户级）配置 MCP，进程的工作目录通常是 `/`，会导致写入 `.lanhu-context-mcp.local/` 时因为没有权限直接报错。所以 Qoder 配置里必须显式指定 `--cwd`（或 `env.CWD`）把工作目录切到项目根，同时通过 `env` 传入 `LANHU_TOKEN`（stdio 子进程不会继承 shell 环境变量）。
@@ -94,6 +110,39 @@ Qoder（全局 MCP 服务）
 **Windows**
 
 如果在 Windows 下直接使用上面的 `npx` 配置启动失败，可以改用下面的写法：
+
+Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "lanhu-context-mcp"]
+    }
+  }
+}
+```
+
+TRAE（.trae/mcp.json）
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "${workspaceFolder}"
+      ]
+    }
+  }
+}
+```
 
 Codex（WSL2）
 
@@ -119,19 +168,6 @@ USERPROFILE = "C:\\Users\\{your-name}"
 HOME = "C:\\Users\\{your-name}"
 SYSTEMROOT = "C:\\Windows"
 COMSPEC = "C:\\Windows\\System32\\cmd.exe"
-```
-
-Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
-
-```json
-{
-  "mcpServers": {
-    "lanhu-context-mcp": {
-      "command": "cmd",
-      "args": ["/c", "npx", "-y", "lanhu-context-mcp"]
-    }
-  }
-}
 ```
 
 Qoder（全局 MCP 服务）

@@ -13,6 +13,7 @@
 - 🧱 Includes `Design Tokens` and a design preview for downstream implementation and visual checking
 - 🧭 Attaches implementation guidance for downstream AI, including priorities, adaptation rules, and constraints
 - ⚙️ Supports CLI flags and environment variables for `Tailwind` output, skipping slices, unit scaling, and prompt language
+- 📦 Ships two output modes — `inline` (default) returns everything in the tool result; `files` packs HTML, slice mappings, Design Tokens, and the implementation guide into `context.md` + `preview.png` on disk and only returns `resource_link`s, side-stepping the truncation you hit on large designs when an MCP client enforces a tool-output token cap (e.g. Claude Code's `MAX_MCP_OUTPUT_TOKENS` defaults to 25000)
 
 ## Documentation
 
@@ -42,15 +43,6 @@ LANHU_TOKEN=your_lanhu_token_here
 
 Add the matching MCP config to the corresponding file. For Qoder, open the MCP Services page, click Add, and paste the config:
 
-Codex（.codex/config.toml）
-
-```toml
-[mcp_servers.lanhu-context-mcp]
-cwd = "/absolute/path/to/current-project"
-command = "npx"
-args = ["-y", "lanhu-context-mcp"]
-```
-
 Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
 
 ```json
@@ -62,6 +54,28 @@ Claude Code（.mcp.json） / Cursor（.cursor/mcp.json）
     }
   }
 }
+```
+
+TRAE (.trae/mcp.json)
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "npx",
+      "args": ["-y", "lanhu-context-mcp", "--cwd", "${workspaceFolder}"]
+    }
+  }
+}
+```
+
+Codex（.codex/config.toml）
+
+```toml
+[mcp_servers.lanhu-context-mcp]
+cwd = "/absolute/path/to/current-project"
+command = "npx"
+args = ["-y", "lanhu-context-mcp"]
 ```
 
 Qoder (global MCP service)
@@ -85,6 +99,8 @@ Qoder (global MCP service)
 }
 ```
 
+`TRAE` has a design quirk: the MCP child process's working directory does not point at the current project, so `.env.local` is not found and writes to `.lanhu-context-mcp.local/` fail. The TRAE config above therefore must always pass `--cwd`; use the editor's built-in `${workspaceFolder}` variable to point at the project root automatically, with no hardcoded absolute path.
+
 `Codex` needs one extra field here: set `cwd` to the absolute path of your current project. Because that path usually differs across developers, `.codex/config.toml` should usually stay local and not be committed to Git.
 
 `Qoder` currently only supports global (user-level) MCP configuration, so the spawned server typically runs with `cwd = /` and fails when it tries to mkdir `.lanhu-context-mcp.local/`. The Qoder config above therefore must pass `--cwd` (or `env.CWD`) pointing to your project root, and also pass `LANHU_TOKEN` via `env` (stdio child processes do not inherit your shell env).
@@ -94,6 +110,39 @@ Qoder (global MCP service)
 **Windows**
 
 If the `npx` config above fails to start on Windows, use the following fallback:
+
+Claude Code (`.mcp.json`) / Cursor (`.cursor/mcp.json`)
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "lanhu-context-mcp"]
+    }
+  }
+}
+```
+
+TRAE (`.trae/mcp.json`)
+
+```json
+{
+  "mcpServers": {
+    "lanhu-context-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "lanhu-context-mcp",
+        "--cwd",
+        "${workspaceFolder}"
+      ]
+    }
+  }
+}
+```
 
 Codex (WSL2)
 
@@ -119,19 +168,6 @@ USERPROFILE = "C:\\Users\\{your-name}"
 HOME = "C:\\Users\\{your-name}"
 SYSTEMROOT = "C:\\Windows"
 COMSPEC = "C:\\Windows\\System32\\cmd.exe"
-```
-
-Claude Code (`.mcp.json`) / Cursor (`.cursor/mcp.json`)
-
-```json
-{
-  "mcpServers": {
-    "lanhu-context-mcp": {
-      "command": "cmd",
-      "args": ["/c", "npx", "-y", "lanhu-context-mcp"]
-    }
-  }
-}
 ```
 
 Qoder (global MCP service)
