@@ -197,7 +197,7 @@ export default defineConfig({
           { text: '指南', link: '/guide/what-is-lanhu-context-mcp' },
           { text: 'API', link: '/reference/' },
           { text: '生态', link: '/ecosystem/lanhu-helper' },
-          { text: '博客', link: '/blog/why-lanhu-context-mcp' }
+          { text: '博客', link: '/blog/v1-milestone' }
         ],
         sidebar: {
           '/guide/': createGuideSidebar('', [
@@ -227,6 +227,10 @@ export default defineConfig({
           ]),
           '/ecosystem/': createEcosystemSidebar('', '生态', ['Lanhu Helper']),
           '/blog/': createBlogSidebar('', '博客', [
+            {
+              text: '1.0.0 里程碑：正式支持 Tailwind CSS v4',
+              link: '/blog/v1-milestone'
+            },
             {
               text: '从两个 issue 谈起：cwd 和 mode=files 的设计思路',
               link: '/blog/cwd-and-files-mode'
@@ -279,7 +283,7 @@ export default defineConfig({
           { text: 'Guide', link: '/en/guide/what-is-lanhu-context-mcp' },
           { text: 'API', link: '/en/reference/' },
           { text: 'Ecosystem', link: '/en/ecosystem/lanhu-helper' },
-          { text: 'Blog', link: '/en/blog/why-lanhu-context-mcp' }
+          { text: 'Blog', link: '/en/blog/v1-milestone' }
         ],
         sidebar: {
           '/en/guide/': createGuideSidebar('/en', [
@@ -311,6 +315,10 @@ export default defineConfig({
             'Lanhu Helper'
           ]),
           '/en/blog/': createBlogSidebar('/en', 'Blog', [
+            {
+              text: 'The 1.0.0 milestone: Tailwind CSS v4 support',
+              link: '/blog/v1-milestone'
+            },
             {
               text: 'Two issues, one design story: how cwd and mode=files came about',
               link: '/blog/cwd-and-files-mode'
