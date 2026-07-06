@@ -33,6 +33,7 @@ export function makeIntegrationConfig(
     isHttpMode: false,
     isStdioMode: true,
     tailwindcss: envBool('TAILWINDCSS'),
+    twVersion: Number(process.env.TW_VERSION) === 4 ? 4 : 3,
     skipSlices: envBool('SKIP_SLICES'),
     unitScale: 2,
     promptLang: process.env.PROMPT_LANG === 'zh-CN' ? 'zh-CN' : 'en-US',
@@ -206,6 +207,63 @@ export function describeGetDesignContextIntegration(
           const styleContent = styleMatch[1];
           expect(styleContent).not.toMatch(/^\s*\.[a-zA-Z]/m);
         }
+      }, 60_000);
+
+      test('tailwindcss mode with tw-version 4: uses the v4 engine end to end', async () => {
+        const { client: tw4Client, close: closeTw4Harness } =
+          await setupHarness({
+            tailwindcss: true,
+            twVersion: 4
+          });
+
+        const result = await callTool(tw4Client, 'get_design_context', {
+          url: testUrl
+        });
+
+        await closeTw4Harness();
+
+        expect(result.isError).toBeFalsy();
+
+        const htmlItem = result.content[0] as { type: 'text'; text: string };
+        expect(htmlItem.type).toBe('text');
+        expect(htmlItem.text).toContain('HTML+Tailwind');
+        expect(htmlItem.text).toContain('<div');
+
+        // v3-engine fingerprints must NOT appear. The v4 engine maps
+        // font-weight keywords to font-normal/font-bold (never font-[normal]/
+        // font-[bold]) and emits font-[...] for font families instead of the
+        // [font-family:...] arbitrary-property form — Lanhu exports nearly
+        // always contain font-weight/font-family, so leaking any of these
+        // means the request was served by the v3 engine.
+        expect(htmlItem.text).not.toContain('font-[normal]');
+        expect(htmlItem.text).not.toContain('font-[bold]');
+        expect(htmlItem.text).not.toContain('[font-family:');
+
+        // Same structural guarantees as the v3 tailwindcss mode.
+        const styleMatch = htmlItem.text.match(/<style>([\s\S]*?)<\/style>/);
+        if (styleMatch) {
+          expect(styleMatch[1]).not.toMatch(/^\s*\.[a-zA-Z]/m);
+        }
+
+        // Persist the converted HTML so the run can be eyeballed directly.
+        const outputDir = join(process.cwd(), 'tmp', 'integration');
+        mkdirSync(outputDir, { recursive: true });
+        writeFileSync(
+          join(
+            outputDir,
+            `get-design-context.tool-output.tw4.${transportName}.json`
+          ),
+          JSON.stringify(result, null, 2),
+          'utf-8'
+        );
+        writeFileSync(
+          join(
+            outputDir,
+            `get-design-context.tool-output.tw4.${transportName}.txt`
+          ),
+          htmlItem.text,
+          'utf-8'
+        );
       }, 60_000);
 
       describe('mode=files', () => {

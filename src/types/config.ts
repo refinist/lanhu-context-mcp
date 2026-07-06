@@ -10,6 +10,7 @@ export interface ServerConfig extends LanhuApiConfig {
   isHttpMode: boolean;
   isStdioMode: boolean;
   tailwindcss: boolean;
+  twVersion: 3 | 4;
   skipSlices: boolean;
   unitScale: number;
   promptLang: 'en-US' | 'zh-CN';

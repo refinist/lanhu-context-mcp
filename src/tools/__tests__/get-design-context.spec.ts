@@ -23,6 +23,7 @@ function makeConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
     isHttpMode: false,
     isStdioMode: true,
     tailwindcss: false,
+    twVersion: 3,
     skipSlices: false,
     unitScale: 2,
     promptLang: 'en-US',
@@ -292,9 +293,9 @@ describe('registerGetDesignContext', () => {
           'https://example.com/assets/icon.png'
       }
     });
-    vi.spyOn(cssToTailwind, 'convertHtmlToTailwind').mockResolvedValue(
-      '<div>tailwind-html</div>'
-    );
+    const convertHtmlToTailwindSpy = vi
+      .spyOn(cssToTailwind, 'convertHtmlToTailwind')
+      .mockResolvedValue('<div>tailwind-html</div>');
     const getSketchJsonSpy = vi
       .spyOn(lanhuApi, 'getSketchJson')
       .mockResolvedValue({
@@ -321,6 +322,11 @@ describe('registerGetDesignContext', () => {
     expect(downloadImageSpy).toHaveBeenCalledWith({
       imgUrl: 'https://example.com/preview.png'
     });
+    // Defaults to twVersion: 3 when the config doesn't override it.
+    expect(convertHtmlToTailwindSpy).toHaveBeenCalledWith(
+      '<div>localized-html</div>',
+      { twVersion: 3 }
+    );
 
     expect(content[0]).toEqual({
       type: 'text',
@@ -346,6 +352,44 @@ describe('registerGetDesignContext', () => {
       data: Buffer.from('preview').toString('base64'),
       mimeType: 'image/png'
     });
+  });
+
+  test('tw-version: passes twVersion: 4 through to convertHtmlToTailwind', async () => {
+    const { handler } = createToolHarness({
+      tailwindcss: true,
+      twVersion: 4
+    });
+    vi.spyOn(urlParser, 'parseLanhuUrl').mockReturnValue({
+      teamId: 'team-1',
+      projectId: 'project-1',
+      docId: 'img-1',
+      versionId: undefined
+    });
+    vi.spyOn(lanhuApi, 'getDesignMeta').mockResolvedValue({
+      id: 'img-1',
+      name: 'Home Screen',
+      projectName: 'Demo Project'
+    });
+    vi.spyOn(lanhuApi, 'getDesignSchemaJson').mockResolvedValue({ root: true });
+    vi.spyOn(schemaToHtml, 'convertLanhuToHtml').mockReturnValue(
+      '<div>raw-html</div>'
+    );
+    vi.spyOn(schemaToHtml, 'localizeImageUrls').mockReturnValue({
+      html: '<div>raw-html</div>',
+      mapping: {}
+    });
+    const convertHtmlToTailwindSpy = vi
+      .spyOn(cssToTailwind, 'convertHtmlToTailwind')
+      .mockResolvedValue('<div>tailwind4-html</div>');
+    vi.spyOn(lanhuApi, 'getSketchJson').mockResolvedValue({ sketch: true });
+    vi.spyOn(designTokens, 'extractDesignTokens').mockReturnValue('');
+
+    await handler({ url: 'https://example.com' });
+
+    expect(convertHtmlToTailwindSpy).toHaveBeenCalledWith(
+      '<div>raw-html</div>',
+      { twVersion: 4 }
+    );
   });
 
   test('STOPs when HTML schema fetch fails', async () => {

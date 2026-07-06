@@ -1,12 +1,19 @@
 // Convert Lanhu HTML with embedded CSS into Tailwind-based HTML.
 // The flow is:
 // 1. Extract CSS rules from the HTML <style> block.
-// 2. Convert class rules into Tailwind @apply directives.
+// 2. Convert class rules into Tailwind utility classes, via the v3
+//    (`css-to-tailwindcss`) or v4 (`css-to-tailwindcss4`) engine.
 // 3. Build a className -> Tailwind classes map from the conversion result.
 // 4. Replace HTML class attributes with mapped Tailwind classes.
 // 5. Keep only non-class global reset rules in the final <style> block.
 
 import { TailwindConverter } from 'css-to-tailwindcss';
+import { convertCSS } from 'css-to-tailwindcss4';
+
+export interface ConvertHtmlToTailwindOptions {
+  // Tailwind major version to target. Defaults to 3 (existing behavior).
+  twVersion?: 3 | 4;
+}
 
 // Map common Lanhu layout classes to their Tailwind equivalents.
 // justify-* and align-* do not add flex on their own because flex-col/flex-row already include it.
@@ -43,8 +50,70 @@ function extractResetCss(cssContent: string): string {
   return resetRules.join('\n');
 }
 
+// v3 engine: css-to-tailwindcss emits `@apply` directives inside each rule;
+// we read the class list back out of those directives.
+async function fillClassMapV3(
+  cssToConvert: string,
+  classMap: Map<string, string>
+): Promise<void> {
+  const converter = new TailwindConverter({
+    remInPx: null,
+    tailwindConfig: { content: [], theme: {} },
+    arbitraryPropertiesIsEnabled: true
+  });
+
+  const { nodes } = await converter.convertCSS(cssToConvert);
+  for (const node of nodes) {
+    if (!node.rule) continue;
+    // Strip the leading dot from the selector to get the class name.
+    const selector = node.rule.selector || '';
+    const cls = selector.replace(/^\./, '');
+    if (!cls) continue;
+
+    // Read Tailwind classes from the generated @apply directive.
+    const tailwindClasses: string[] = [];
+    if (node.rule.nodes) {
+      for (const child of node.rule.nodes) {
+        // @apply node
+        if (
+          child.type === 'atrule' &&
+          (child as { name?: string }).name === 'apply'
+        ) {
+          const params = (child as { params?: string }).params || '';
+          tailwindClasses.push(...params.split(/\s+/).filter(Boolean));
+        }
+      }
+    }
+
+    if (tailwindClasses.length > 0) {
+      classMap.set(cls, tailwindClasses.join(' '));
+    }
+  }
+}
+
+// v4 engine: css-to-tailwindcss4 returns the class list directly per rule.
+async function fillClassMapV4(
+  cssToConvert: string,
+  classMap: Map<string, string>
+): Promise<void> {
+  const { rules } = await convertCSS(cssToConvert, {
+    remInPx: null,
+    arbitraryProperties: true
+  });
+  for (const rule of rules) {
+    const cls = rule.selector.replace(/^\./, '');
+    if (!cls || rule.classes.length === 0) continue;
+    classMap.set(cls, rule.classes.join(' '));
+  }
+}
+
 // Convert HTML with a <style> block into Tailwind HTML.
-export async function convertHtmlToTailwind(html: string): Promise<string> {
+export async function convertHtmlToTailwind(
+  html: string,
+  options: ConvertHtmlToTailwindOptions = {}
+): Promise<string> {
+  const twVersion = options.twVersion === 4 ? 4 : 3;
+
   // Extract the <style> content first.
   const styleMatch = html.match(/<style[^>]*>([\s\S]*?)<\/style>/);
   if (!styleMatch) return html;
@@ -65,50 +134,20 @@ export async function convertHtmlToTailwind(html: string): Promise<string> {
     customRules.push(`.${className} { ${body} }`);
   }
 
-  // Convert custom CSS rules with css-to-tailwindcss.
+  // Convert custom CSS rules with the selected Tailwind engine.
   const classMap = new Map<string, string>();
 
   if (customRules.length > 0) {
     try {
-      const converter = new TailwindConverter({
-        remInPx: null,
-        tailwindConfig: { content: [], theme: {} },
-        arbitraryPropertiesIsEnabled: true
-      });
-
       const cssToConvert = customRules.join('\n');
-      const { nodes } = await converter.convertCSS(cssToConvert);
-      // Extract the class mapping from the conversion result.
-      for (const node of nodes) {
-        if (node.rule) {
-          // Strip the leading dot from the selector to get the class name.
-          const selector = node.rule.selector || '';
-          const cls = selector.replace(/^\./, '');
-          if (!cls) continue;
-
-          // Read Tailwind classes from the generated @apply directive.
-          const tailwindClasses: string[] = [];
-          if (node.rule.nodes) {
-            for (const child of node.rule.nodes) {
-              // @apply node
-              if (
-                child.type === 'atrule' &&
-                (child as { name?: string }).name === 'apply'
-              ) {
-                const params = (child as { params?: string }).params || '';
-                tailwindClasses.push(...params.split(/\s+/).filter(Boolean));
-              }
-            }
-          }
-
-          if (tailwindClasses.length > 0) {
-            classMap.set(cls, tailwindClasses.join(' '));
-          }
-        }
+      if (twVersion === 4) {
+        await fillClassMapV4(cssToConvert, classMap);
+      } else {
+        await fillClassMapV3(cssToConvert, classMap);
       }
     } catch (err) {
       // Fall back to the original HTML and keep the failure visible in logs.
-      console.error('[css-to-tailwind] conversion failed:', err);
+      console.error(`[css-to-tailwind] v${twVersion} conversion failed:`, err);
       return html;
     }
   }

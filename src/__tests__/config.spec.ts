@@ -12,6 +12,7 @@ describe('getServerConfig transport mode', () => {
     HTTP_TIMEOUT: process.env.HTTP_TIMEOUT,
     STDIO: process.env.STDIO,
     TAILWINDCSS: process.env.TAILWINDCSS,
+    TW_VERSION: process.env.TW_VERSION,
     SKIP_SLICES: process.env.SKIP_SLICES,
     UNIT_SCALE: process.env.UNIT_SCALE,
     PROMPT_LANG: process.env.PROMPT_LANG,
@@ -54,6 +55,7 @@ describe('getServerConfig transport mode', () => {
     setEnvValue('HTTP_TIMEOUT', undefined);
     setEnvValue('STDIO', undefined);
     setEnvValue('TAILWINDCSS', undefined);
+    setEnvValue('TW_VERSION', undefined);
     setEnvValue('SKIP_SLICES', undefined);
     setEnvValue('UNIT_SCALE', undefined);
     setEnvValue('PROMPT_LANG', undefined);
@@ -107,6 +109,7 @@ describe('getServerConfig transport mode', () => {
         'HTTP_TIMEOUT=45000',
         'STDIO=1',
         'TAILWINDCSS=1',
+        'TW_VERSION=4',
         'SKIP_SLICES=1',
         'UNIT_SCALE=2',
         'PROMPT_LANG=zh-CN',
@@ -124,6 +127,7 @@ describe('getServerConfig transport mode', () => {
       isStdioMode: true,
       isHttpMode: false,
       tailwindcss: true,
+      twVersion: 4,
       skipSlices: true,
       unitScale: 2,
       promptLang: 'zh-CN',
@@ -169,6 +173,34 @@ describe('getServerConfig transport mode', () => {
     expect(config.isHttpMode).toBe(true);
     expect(config.promptLang).toBe('en-US');
     expect(config.port).toBe(0);
+  });
+
+  test('defaults twVersion to 3 when neither flag nor env is set', () => {
+    const config = loadConfig();
+    expect(config.twVersion).toBe(3);
+  });
+
+  test('TW_VERSION=4 env selects the v4 engine', () => {
+    setEnvValue('TW_VERSION', '4');
+    const config = loadConfig();
+    expect(config.twVersion).toBe(4);
+  });
+
+  test('--tw-version 4 selects the v4 engine', () => {
+    const config = loadConfig(['--tw-version', '4']);
+    expect(config.twVersion).toBe(4);
+  });
+
+  test('--tw-version wins over TW_VERSION env', () => {
+    setEnvValue('TW_VERSION', '4');
+    const config = loadConfig(['--tw-version', '3']);
+    expect(config.twVersion).toBe(3);
+  });
+
+  test('unsupported TW_VERSION value falls back to 3', () => {
+    setEnvValue('TW_VERSION', '5');
+    const config = loadConfig();
+    expect(config.twVersion).toBe(3);
   });
 
   test('--mode files sets config.mode to "files"', () => {

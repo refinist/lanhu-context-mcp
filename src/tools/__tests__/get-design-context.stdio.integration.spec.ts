@@ -33,6 +33,8 @@ function buildStdioArgs(config: ServerConfig): string[] {
     args.push('--tailwindcss');
   }
 
+  args.push('--tw-version', String(config.twVersion));
+
   if (config.skipSlices) {
     args.push('--skip-slices');
   }

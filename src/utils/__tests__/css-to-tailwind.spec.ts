@@ -148,3 +148,63 @@ describe('convertHtmlToTailwind — custom property conversion', () => {
     expect(result).toContain('unknown-cls');
   });
 });
+
+// v4 engine (css-to-tailwindcss4, linked via file: for now)
+describe('convertHtmlToTailwind — v4 path (twVersion: 4)', () => {
+  test('defaults to the v3 engine when twVersion is omitted', async () => {
+    const html = `<style>
+.box { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); font-weight: bold; }
+</style>
+<div class="box"></div>`;
+
+    const result = await convertHtmlToTailwind(html);
+    // v3's default theme names this shadow-sm; it also still has the
+    // upstream font-weight-keyword bug (font-[bold] compiles to a
+    // font-family, not font-weight) — both are expected, unfixed upstream.
+    expect(result).toContain('shadow-sm');
+    expect(result).toContain('font-[bold]');
+  });
+
+  test('uses Tailwind v4 utility names and value semantics', async () => {
+    const html = `<style>
+.box { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); font-weight: bold; }
+</style>
+<div class="box"></div>`;
+
+    const result = await convertHtmlToTailwind(html, { twVersion: 4 });
+    // v4 renamed the shadow scale (shadow-sm -> shadow-xs) and our v4
+    // library maps the font-weight keyword to the correct utility.
+    expect(result).toContain('shadow-xs');
+    expect(result).toContain('font-bold');
+  });
+
+  test('threads remInPx: null through to the v4 engine like the v3 path', async () => {
+    const html = `<style>
+.box { width: 100px; height: 50px; }
+</style>
+<div class="box"></div>`;
+
+    const result = await convertHtmlToTailwind(html, { twVersion: 4 });
+    const classMatch = result.match(/class="([^"]*)"/);
+    const classes = classMatch ? classMatch[1] : '';
+    // remInPx: null means no px->rem normalization: values stay literal
+    // arbitrary pixels rather than snapping to the rem-based spacing scale.
+    expect(classes).toContain('w-[100px]');
+    expect(classes).toContain('h-[50px]');
+  });
+
+  test('v4 path also honors the common Lanhu class map and reset CSS', async () => {
+    const html = `<style>
+body * { box-sizing: border-box; }
+.box { display: flex; flex-direction: column; }
+</style>
+<div class="box flex-col justify-center"></div>`;
+
+    const result = await convertHtmlToTailwind(html, { twVersion: 4 });
+    expect(result).toContain('body *');
+    const classMatch = result.match(/class="([^"]*)"/);
+    const classes = classMatch ? classMatch[1].split(/\s+/) : [];
+    expect(classes).toContain('justify-center');
+    expect(classes.filter(c => c === 'flex').length).toBe(1);
+  });
+});

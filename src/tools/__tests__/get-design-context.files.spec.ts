@@ -22,6 +22,7 @@ function makeConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
     isHttpMode: false,
     isStdioMode: true,
     tailwindcss: false,
+    twVersion: 3,
     skipSlices: false,
     unitScale: 1,
     promptLang: 'en-US',
