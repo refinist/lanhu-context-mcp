@@ -47,6 +47,11 @@ export function getServerConfig(): ServerConfig {
         description:
           'Convert CSS classes to Tailwind utility classes in HTML output'
       },
+      twVersion: {
+        type: Number,
+        description:
+          'Tailwind CSS version to target when --tailwindcss is enabled: 3 (default) or 4'
+      },
       skipSlices: {
         type: Boolean,
         description:
@@ -130,6 +135,10 @@ export function getServerConfig(): ServerConfig {
         ? true
         : (envStdioMode ?? true);
   const tailwindcss = argv.flags.tailwindcss ?? envBool('TAILWINDCSS');
+  const rawTwVersion =
+    argv.flags.twVersion ??
+    (process.env.TW_VERSION ? Number(process.env.TW_VERSION) : undefined);
+  const twVersion: 3 | 4 = rawTwVersion === 4 ? 4 : 3;
   const skipSlices = argv.flags.skipSlices ?? envBool('SKIP_SLICES');
   const unitScale =
     argv.flags.unitScale ??
@@ -166,6 +175,7 @@ export function getServerConfig(): ServerConfig {
     isHttpMode,
     isStdioMode,
     tailwindcss,
+    twVersion,
     skipSlices,
     unitScale,
     promptLang,

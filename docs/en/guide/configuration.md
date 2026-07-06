@@ -34,10 +34,47 @@ TAILWINDCSS=1
 
 ::: tip
 
-- The current `css-to-tailwindcss` conversion path only supports Tailwind 3.
-- If you need Tailwind 4, you can first consume `HTML+Tailwind` and then let the AI convert it one more time; the author has not deeply tested that flow yet.
-- Tailwind 3 is already very usable, and there are plans to keep improving [`css-to-tailwindcss`](https://github.com/jackardios/css-to-tailwindcss) going forward.
+- ~~The current `css-to-tailwindcss` conversion path only supports Tailwind 3.~~
+- ~~If you need Tailwind 4, you can first consume `HTML+Tailwind` and then let the AI convert it one more time; the author has not deeply tested that flow yet.~~
+- Converting straight to Tailwind 4 is now supported: pick the target version with the [`tw-version`](#tw-version) option below; the v4 path uses [`css-to-tailwindcss4`](https://github.com/refinist/css-to-tailwindcss4), written by the author for exactly this.
+- Tailwind 3 is already very usable, and both conversion paths will keep improving going forward.
 
+:::
+
+## `tw-version`
+
+Picks the target Tailwind major version used when `tailwindcss` is enabled: `3` (default) or `4`. Only takes effect together with `tailwindcss`.
+
+- `3` (default): keeps using [`css-to-tailwindcss`](https://github.com/jackardios/css-to-tailwindcss) — identical behavior to previous releases.
+- `4`: uses [`css-to-tailwindcss4`](https://github.com/refinist/css-to-tailwindcss4), which emits Tailwind CSS v4 utility names and syntax (gradients like `bg-linear-to-r from-[#ff6034] to-[#ee0a24]`, font-weight keywords as `font-bold`, slash opacity like `text-white/50`). Its output is regression-tested against the real Tailwind v4 compiler.
+
+When to use:
+
+- your project is on Tailwind CSS v4 (CSS-first configuration)
+- you don't want the AI to rewrite v3 output into v4 as a second pass
+
+Example:
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": ["-y", "lanhu-context-mcp", "--tailwindcss", "--tw-version", "4"]
+  }
+}
+```
+
+```dotenv [.env.local]
+TAILWINDCSS=1
+TW_VERSION=4
+```
+
+:::
+
+::: tip
+The v4 path is powered by [`css-to-tailwindcss4`](https://github.com/refinist/css-to-tailwindcss4), maintained by the author and kept up to date with new Tailwind releases. The default stays `3`, so existing users are unaffected. If you hit conversion issues, please report them at [css-to-tailwindcss4 issues](https://github.com/refinist/css-to-tailwindcss4/issues).
 :::
 
 ## `unit-scale`

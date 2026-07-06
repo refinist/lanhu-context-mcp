@@ -107,7 +107,9 @@ export function registerGetDesignContext({
         if (localized) htmlCode = localized.html;
 
         if (config.tailwindcss) {
-          htmlCode = await convertHtmlToTailwind(htmlCode);
+          htmlCode = await convertHtmlToTailwind(htmlCode, {
+            twVersion: config.twVersion
+          });
         }
 
         htmlLabel = config.tailwindcss

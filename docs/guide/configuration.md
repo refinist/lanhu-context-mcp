@@ -34,10 +34,47 @@ TAILWINDCSS=1
 
 ::: tip
 
-- 当前 `css-to-tailwindcss` 这条转换链路只支持转到 Tailwind 3。
-- 如果你需要 Tailwind 4，可以先拿到 `HTML+Tailwind`，再让 AI 继续转换一轮；这部分作者还没有深入尝试具体效果。
-- 目前 Tailwind 3 已经很好用，后续也会继续推进 [`css-to-tailwindcss`](https://github.com/jackardios/css-to-tailwindcss) 这个开源工具的升级。
+- ~~当前 `css-to-tailwindcss` 这条转换链路只支持转到 Tailwind 3。~~
+- ~~如果你需要 Tailwind 4，可以先拿到 `HTML+Tailwind`，再让 AI 继续转换一轮；这部分作者还没有深入尝试具体效果。~~
+- 现在已经支持直接转到 Tailwind 4：配合下方的 [`tw-version`](#tw-version) 参数选择目标版本，v4 链路使用作者为此编写的 [`css-to-tailwindcss4`](https://github.com/refinist/css-to-tailwindcss4)。
+- 目前 Tailwind 3 已经很好用，后续也会继续推进两条转换链路的升级。
   :::
+
+## `tw-version`
+
+选择 `tailwindcss` 开启后转换的目标 Tailwind 大版本：`3`（默认）或 `4`。只在 `tailwindcss` 开启时生效。
+
+- `3`（默认）：沿用 [`css-to-tailwindcss`](https://github.com/jackardios/css-to-tailwindcss)，行为与之前版本完全一致。
+- `4`：使用作者为 v4 编写的 [`css-to-tailwindcss4`](https://github.com/refinist/css-to-tailwindcss4)，按 Tailwind CSS v4 的工具类命名与语法产出（如 `bg-linear-to-r from-[#ff6034] to-[#ee0a24]` 渐变、`font-bold` 字重关键字、`text-white/50` 斜杠透明度），产物经过真实 Tailwind v4 编译器的回归验证。
+
+何时使用：
+
+- 你的项目用的是 Tailwind CSS v4（CSS-first 配置）
+- 你不想拿到 v3 产物后再让 AI 二次改写成 v4
+
+示例：
+
+::: code-group
+
+```json [CLI]
+{
+  "lanhu-context-mcp": {
+    "command": "npx",
+    "args": ["-y", "lanhu-context-mcp", "--tailwindcss", "--tw-version", "4"]
+  }
+}
+```
+
+```dotenv [.env.local]
+TAILWINDCSS=1
+TW_VERSION=4
+```
+
+:::
+
+::: tip
+v4 链路由作者维护的 [`css-to-tailwindcss4`](https://github.com/refinist/css-to-tailwindcss4) 驱动，会随 Tailwind 新版本持续跟进；默认值保持 `3`，对既有用户零影响。遇到转换问题欢迎到 [css-to-tailwindcss4 issues](https://github.com/refinist/css-to-tailwindcss4/issues) 反馈。
+:::
 
 ## `unit-scale`
 
