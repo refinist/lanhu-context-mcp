@@ -241,7 +241,8 @@ export function convertLanhuToHtml(
       cssParts.push(`.${className} {\n}`);
     }
   }
-  const cssString = cssParts.join('\n') + COMMON_CSS;
+  // Common helper classes go first so node-specific rules can override them.
+  const cssString = COMMON_CSS.trimStart() + cssParts.join('\n');
 
   // Generate the HTML body markup.
   const bodyHtml = generateHtml(jsonData, 0);
