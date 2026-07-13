@@ -177,7 +177,7 @@ describe('lanhu-api', () => {
     expect(ddsRequest).toHaveBeenNthCalledWith(2, '/schema.json');
   });
 
-  test('getDesignSchemaJson only keeps local version lookup guards', async () => {
+  test('getDesignSchemaJson surfaces envelope errors and keeps local version lookup guards', async () => {
     const { clientGet } = setupMocks();
     clientGet
       .mockResolvedValueOnce({ data: { code: '10001', msg: 'bad request' } })
@@ -189,14 +189,22 @@ describe('lanhu-api', () => {
           code: '00000',
           result: { images: [{ id: 'other', latest_version: 'v-2' }] }
         }
+      })
+      .mockResolvedValueOnce({
+        data: { code: '00000', result: {} }
       });
 
     await expect(
       getDesignSchemaJson(makeDesignRequest('img-1'))
-    ).rejects.toThrow('Design not found: image_id=img-1');
+    ).rejects.toThrow(
+      'Lanhu API /api/project/multi_info returned empty result (10001 bad request)'
+    );
     await expect(
       getDesignSchemaJson(makeDesignRequest('img-1'))
     ).rejects.toThrow('Design has no latest_version');
+    await expect(
+      getDesignSchemaJson(makeDesignRequest('img-1'))
+    ).rejects.toThrow('Design not found: image_id=img-1');
     await expect(
       getDesignSchemaJson(makeDesignRequest('img-1'))
     ).rejects.toThrow('Design not found: image_id=img-1');
@@ -216,10 +224,37 @@ describe('lanhu-api', () => {
 
     await expect(
       getDesignSchemaJson(makeDesignRequest('img-1'))
-    ).rejects.toThrow('store_schema_revise did not return data_resource_url');
+    ).rejects.toThrow(
+      'Lanhu API /api/dds/image/store_schema_revise returned empty data (10001 broken)'
+    );
     await expect(
       getDesignSchemaJson(makeDesignRequest('img-1'))
     ).rejects.toThrow('store_schema_revise did not return data_resource_url');
+  });
+
+  test('getDesignMeta surfaces a readable error when Lanhu returns result: null (issue #16)', async () => {
+    const { clientGet } = setupMocks();
+    clientGet
+      .mockResolvedValueOnce({
+        data: { code: '10009', msg: 'Image not exist', result: null }
+      })
+      .mockResolvedValueOnce({
+        data: { code: '10009', result: null }
+      })
+      .mockResolvedValueOnce({
+        data: { result: null }
+      });
+
+    await expect(getDesignMeta(makeDesignRequest('img-1'))).rejects.toThrow(
+      'Lanhu API /api/project/image returned empty result (10009 Image not exist). ' +
+        'Verify the Lanhu URL is complete (tid/pid/image_id must be full ids, not truncated) and LANHU_TOKEN is valid.'
+    );
+    await expect(getDesignMeta(makeDesignRequest('img-1'))).rejects.toThrow(
+      'Lanhu API /api/project/image returned empty result (10009)'
+    );
+    await expect(getDesignMeta(makeDesignRequest('img-1'))).rejects.toThrow(
+      'Lanhu API /api/project/image returned empty result. Verify'
+    );
   });
 
   test('getDesignMeta picks preview URLs and project names from the payload', async () => {

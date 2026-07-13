@@ -111,6 +111,34 @@ body * {
     expect(result).toContain('body *');
   });
 
+  test('v4 path skips rules without a class name or converted classes', async () => {
+    const convertCSS = vi.fn().mockResolvedValue({
+      rules: [
+        { selector: '', classes: ['w-4'] },
+        { selector: '.ghost', classes: [] },
+        { selector: '.box', classes: ['w-[100px]'] }
+      ]
+    });
+
+    vi.doMock('css-to-tailwindcss4', () => ({ convertCSS }));
+
+    const { convertHtmlToTailwind } = await import('../css-to-tailwind.ts');
+
+    const html = `<style>
+.ghost {
+  width: 100px;
+}
+.box {
+  width: 100px;
+}
+</style>
+<div class="ghost box"></div>`;
+
+    const result = await convertHtmlToTailwind(html, { twVersion: 4 });
+
+    expect(result).toContain('class="ghost w-[100px]"');
+  });
+
   test('skips empty reset rules and ignores apply nodes without params', async () => {
     const convertCSS = vi.fn().mockResolvedValue({
       nodes: [

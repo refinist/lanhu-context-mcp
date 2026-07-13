@@ -19,15 +19,34 @@ export type {
   LanhuDesignRequest
 } from '../types/lanhu.ts';
 
+// Lanhu reports business failures (invalid token, missing image, no access)
+// as HTTP 200 with a null payload; surface its code/msg instead of letting
+// the null crash downstream destructuring.
+function unwrapEnvelope<T>(
+  body: LanhuApiResponse<T>,
+  field: 'result' | 'data',
+  endpoint: string
+): T {
+  const value = body[field];
+  if (value != null) return value;
+
+  const detail = [body.code, body.msg]
+    .filter(v => v !== undefined && v !== null && v !== '')
+    .join(' ');
+  throw new Error(
+    `Lanhu API ${endpoint} returned empty ${field}${
+      detail ? ` (${detail})` : ''
+    }. Verify the Lanhu URL is complete (tid/pid/image_id must be full ids, not truncated) and LANHU_TOKEN is valid.`
+  );
+}
+
 // Fetch raw design detail payload for a single image.
 async function getDesignResult({
   teamId,
   projectId,
   imageId
 }: LanhuDesignRequest): Promise<Record<string, unknown>> {
-  const {
-    data: { result = {} }
-  } = await client.get<LanhuApiResponse<Record<string, unknown>>>(
+  const { data } = await client.get<LanhuApiResponse<Record<string, unknown>>>(
     '/api/project/image',
     {
       params: {
@@ -39,7 +58,7 @@ async function getDesignResult({
     }
   );
 
-  return result;
+  return unwrapEnvelope(data, 'result', '/api/project/image');
 }
 
 // Resolve the latest version id for a design from the project listing.
@@ -48,9 +67,7 @@ async function getVersionIdByImageId({
   projectId,
   imageId
 }: LanhuDesignRequest): Promise<string> {
-  const {
-    data: { result = {} }
-  } = await client.get<LanhuApiResponse<Record<string, unknown>>>(
+  const { data } = await client.get<LanhuApiResponse<Record<string, unknown>>>(
     '/api/project/multi_info',
     {
       params: {
@@ -62,7 +79,10 @@ async function getVersionIdByImageId({
     }
   );
 
-  return pickLatestVersionId(result, imageId);
+  return pickLatestVersionId(
+    unwrapEnvelope(data, 'result', '/api/project/multi_info'),
+    imageId
+  );
 }
 
 // Load the DDS schema document behind a version id.
@@ -71,14 +91,17 @@ async function fetchDdsSchema({
 }: {
   versionId: string;
 }): Promise<SchemaNode> {
-  const {
-    data: { data = {} }
-  } = await ddsClient.get<LanhuApiResponse<{ data_resource_url?: string }>>(
-    '/api/dds/image/store_schema_revise',
-    { params: { version_id: versionId } }
-  );
+  const { data: body } = await ddsClient.get<
+    LanhuApiResponse<{ data_resource_url?: string }>
+  >('/api/dds/image/store_schema_revise', {
+    params: { version_id: versionId }
+  });
 
-  const schemaUrl = data.data_resource_url;
+  const schemaUrl = unwrapEnvelope(
+    body,
+    'data',
+    '/api/dds/image/store_schema_revise'
+  ).data_resource_url;
   if (!schemaUrl) {
     throw new Error('store_schema_revise did not return data_resource_url');
   }
