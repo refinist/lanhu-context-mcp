@@ -1,5 +1,9 @@
 # Lanhu Helper
 
+## Installation
+
+Just install [Lanhu Helper](https://chromewebstore.google.com/detail/lanhu-helper/kicpebokhdkhmoeplbbfjlfngnioijio) directly from the Chrome Web Store. Click "Add to Chrome" to finish in one step.
+
 ## What Is Lanhu Helper?
 
 `Lanhu Helper` is a companion plugin for this MCP, currently shipped as a Chrome extension.  
@@ -35,34 +39,6 @@ When copied, `{link}` is replaced with the real detail URL for the current selec
 The right-click menu also includes a `设置提示词模板` (`Set Prompt Template`) entry so you can customize what `复制示例提示词` (`Copy Sample Prompt`) generates.
 
 You can prefill common task descriptions, code paths, or stack-specific requirements in the template, and keep only `{link}` as the placeholder. After saving, the extension will automatically replace `{link}` with the current layer link whenever you copy the prompt.
-
-## Installation
-
-### Install from the Chrome Web Store
-
-We recommend installing [Lanhu Helper](https://chromewebstore.google.com/detail/lanhu-helper/kicpebokhdkhmoeplbbfjlfngnioijio) from the Chrome Web Store first.
-
-### Install from the zip package (Early access)
-
-If you want earlier access to new features, you can also install it manually from the zip package below. Chrome Web Store review usually takes time, so the latest version may not appear in the store immediately.
-
-::: tip
-If the current version matches the Web Store, use the store version. Use the early-access zip only when it is newer.
-:::
-
-<LatestLanhuHelperDownloadLink
-  prefix="Download"
-  empty-text="No download available yet"
-/>
-
-Installation steps:
-
-1. Download the zip above
-2. Unzip it locally
-3. Open `chrome://extensions`
-4. Turn on `Developer mode`
-5. Click `Load unpacked`
-6. Select the extracted extension directory
 
 ## Screenshots
 
