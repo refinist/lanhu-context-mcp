@@ -29,17 +29,21 @@ For full documentation, visit [lanhu.refineup.com](https://lanhu.refineup.com).
 
 - Enable transcoding for the design before uploading it to Lanhu
 
-### Step 1. Prepare environment variables
+### Step 1. Install the Lanhu Helper Chrome extension
+
+Install [Lanhu Helper](https://lanhu.refineup.com/en/ecosystem/lanhu-helper) first. The Lanhu token, selected-layer link, and sample prompt used below are copied from the menu that appears when you right-click a Lanhu layer.
+
+### Step 2. Prepare environment variables
 
 First, create a `.env.local` file.
 
-You need a valid Lanhu login token. See [Get a Lanhu Token](https://lanhu.refineup.com/en/guide/get-lanhu-token).
+Open a logged-in Lanhu page, right-click a layer, choose “复制 Token” (Copy Token), then paste the clipboard contents into `.env.local`.
 
 ```dotenv
-LANHU_TOKEN=your_lanhu_token_here
+LANHU_TOKEN=the value you just copied
 ```
 
-### Step 2. Configure MCP
+### Step 3. Configure MCP
 
 Add the matching MCP config to the corresponding file. For Qoder, open the MCP Services page, click Add, and paste the config:
 
@@ -196,11 +200,9 @@ Qoder (global MCP service)
 `Codex` native fallback reference:
 [openai/codex#2555](https://github.com/openai/codex/issues/2555#issuecomment-3381914894)
 
-### Step 3. Install the Lanhu Helper Chrome extension
-
-Install [Lanhu Helper](https://lanhu.refineup.com/en/ecosystem/lanhu-helper) so you can copy the selected-layer link or sample prompt directly from Lanhu.
-
 ### Step 4. Send the Lanhu link and prompt to AI
+
+Right-click the layer you want to hand to the AI, then use “复制示例提示词” (Copy Sample Prompt) or “复制选中图层链接” (Copy Selected Layer Link). Send that text to the AI.
 
 ```text
 Please implement based on this Lanhu design
@@ -217,7 +219,7 @@ You can write the prompt however you like, but the Lanhu URL must be complete an
 
 ## Ecosystem
 
-[Lanhu Helper](https://lanhu.refineup.com/en/ecosystem/lanhu-helper) — Companion Chrome extension for Lanhu. Right-click inside Lanhu to copy the selected layer's URL and ready-made prompts.
+[Lanhu Helper](https://lanhu.refineup.com/en/ecosystem/lanhu-helper) — Companion Chrome extension for Lanhu. Right-click a layer to copy the token, the selected layer's URL, and a ready-made prompt.
 
 ## Contributing
 
@@ -241,10 +243,10 @@ cp .env.local.example .env.local
 
 Fields:
 
-| Field            | Required              | Purpose                                                                                                   |
-| ---------------- | --------------------- | --------------------------------------------------------------------------------------------------------- |
-| `LANHU_TOKEN`    | Yes                   | Token for calling the Lanhu API. See [how to get it](https://lanhu.refineup.com/en/guide/get-lanhu-token) |
-| `LANHU_TEST_URL` | For integration tests | A real, reachable Lanhu design detail URL the integration test harness will hit                           |
+| Field            | Required              | Purpose                                                                                                                          |
+| ---------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `LANHU_TOKEN`    | Yes                   | Token for calling the Lanhu API. On a logged-in Lanhu page, right-click a layer and use Lanhu Helper’s “复制 Token” (Copy Token) |
+| `LANHU_TEST_URL` | For integration tests | A real, reachable Lanhu design detail URL the integration test harness will hit                                                  |
 
 ### 3. Three-tier verification matrix
 

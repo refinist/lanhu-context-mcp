@@ -30,5 +30,5 @@ features:
   - title: '🆚 On Par with Figma MCP'
     details: 'If you are familiar with Figma MCP, you can think of it as the Lanhu counterpart to the same kind of workflow: turn design data into context for AI to generate code and recreate pages'
   - title: '🧩 Browser Helper'
-    details: 'A companion Lanhu browser extension that quickly copies the selected layer link and prompt snippet'
+    details: 'A companion Lanhu browser extension. Right-click a layer to copy the login token, selected layer link, and sample prompt'
 ---

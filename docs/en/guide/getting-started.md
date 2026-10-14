@@ -14,23 +14,27 @@
   width="300"
 />
 
-## Step 1. Prepare environment variables
+## Step 1. Install the Lanhu Helper Chrome extension
+
+Install <a href="/en/ecosystem/lanhu-helper" target="_blank" rel="noreferrer">Lanhu Helper</a> first. The Lanhu token, selected-layer link, and sample prompt used later are copied from the menu that appears when you right-click a Lanhu layer.
+
+## Step 2. Prepare environment variables
 
 First, create a `.env.local` file.
 
-You need a valid Lanhu login token. See [Get a Lanhu Token](/en/guide/get-lanhu-token).
-
-Set `LANHU_TOKEN` in `.env.local` with the Lanhu token copied from your browser:
+Open a Lanhu page while you are logged in, right-click a layer, and choose “复制 Token” (Copy Token). Paste the clipboard contents into `.env.local`:
 
 ```dotenv
-LANHU_TOKEN=your_lanhu_token_here
+LANHU_TOKEN=the value you just copied
 ```
 
+After a successful copy, the page also shows this same format.
+
 ::: tip
-We recommend keeping your Lanhu token in `.env.local`. Local env files like this are usually not committed to Git, which is safer.
+Keep the Lanhu token in `.env.local`. Local env files like this are usually not committed to Git.
 :::
 
-## Step 2. Configure MCP
+## Step 3. Configure MCP
 
 Add the matching MCP config to the corresponding file for your client. For Qoder, open the MCP Services page, click Add, and paste the config:
 
@@ -192,11 +196,9 @@ COMSPEC = "C:\\Windows\\System32\\cmd.exe"
 `Codex (Native)` fallback: <a href="https://github.com/openai/codex/issues/2555#issuecomment-3381914894" target="_blank" rel="noreferrer">openai/codex#2555</a>
 :::
 
-## Step 3. Install the Lanhu Helper Chrome extension
-
-Install <a href="/en/ecosystem/lanhu-helper" target="_blank" rel="noreferrer">Lanhu Helper</a> so you can copy the selected-layer link or sample prompt directly from Lanhu.
-
 ## Step 4. Send the Lanhu link and prompt to AI
+
+Right-click the layer you want to hand to the AI, then use “复制示例提示词” (Copy Sample Prompt) or “复制选中图层链接” (Copy Selected Layer Link). Send that text to the AI. Common forms look like this:
 
 ```text
 Please implement based on this Lanhu design

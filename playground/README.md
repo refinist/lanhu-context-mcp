@@ -22,7 +22,7 @@
 | **Cursor**      | `.cursor/mcp.json`（项目或用户级）           | —            |
 | **Qoder**       | **目前只能配在全局**（用户级），项目级不生效 | 见下方说明   |
 
-详细的客户端配置示例参考根目录 [`README.md`](../README.md#step-2-配置-mcp)。
+详细的客户端配置示例参考根目录 [`README.md`](../README.md#step-3-配置-mcp)。
 
 ## 快速开始
 
@@ -44,7 +44,7 @@ playground 跑 MCP 时必须能读到 `LANHU_TOKEN`，否则 `get_design_context
   ```
 - 或者在 MCP 配置里通过 `env` 字段传入（Qoder 必须走这种方式，下面单独说）。
 
-获取 Token 的方法见 [获取蓝湖 Token](https://lanhu.refineup.com/guide/get-lanhu-token)。
+获取 Token：安装 [Lanhu Helper](https://lanhu.refineup.com/ecosystem/lanhu-helper) 后，在已登录蓝湖的图层上右键「复制 Token」。
 
 ### 3. （建议）清理上次产物
 

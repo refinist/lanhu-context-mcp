@@ -134,8 +134,8 @@ export default defineConfig({
             {
               text: '基础',
               items: [
-                { text: '快速开始', link: '/guide/getting-started' },
-                { text: '获取蓝湖 Token', link: '/guide/get-lanhu-token' }
+                { text: '快速开始', link: '/guide/getting-started' }
+                // { text: '获取蓝湖 Token', link: '/guide/get-lanhu-token' }
               ]
             },
             {
@@ -220,8 +220,8 @@ export default defineConfig({
             {
               text: 'Essentials',
               items: [
-                { text: 'Getting Started', link: '/guide/getting-started' },
-                { text: 'Get a Lanhu Token', link: '/guide/get-lanhu-token' }
+                { text: 'Getting Started', link: '/guide/getting-started' }
+                // { text: 'Get a Lanhu Token', link: '/guide/get-lanhu-token' }
               ]
             },
             {

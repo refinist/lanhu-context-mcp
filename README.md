@@ -29,17 +29,21 @@
 
 - 设计稿需要先开启转码功能，然后上传到蓝湖
 
-### Step 1. 准备环境变量
+### Step 1. 安装 Lanhu Helper 谷歌浏览器插件
+
+先安装 [Lanhu Helper](https://lanhu.refineup.com/ecosystem/lanhu-helper)。后面的蓝湖 Token、选中图层链接和示例提示词，都要在蓝湖的图层上右键，从弹出的菜单里复制。
+
+### Step 2. 准备环境变量
 
 先创建一个 `.env.local` 文件。
 
-你需要一个可用的蓝湖登录 Token，可参考 [获取蓝湖 Token](https://lanhu.refineup.com/guide/get-lanhu-token)。
+打开已登录的蓝湖页面，在图层上右键，点击「复制 Token」，把剪贴板内容写入 `.env.local`。
 
 ```dotenv
-LANHU_TOKEN=your_lanhu_token_here
+LANHU_TOKEN=刚才复制的内容
 ```
 
-### Step 2. 配置 MCP
+### Step 3. 配置 MCP
 
 把下面对应客户端的 MCP 配置写入对应文件；如果使用 Qoder，在 MCP 服务页点击“添加”后粘贴配置：
 
@@ -196,11 +200,9 @@ Qoder（全局 MCP 服务）
 `Codex` 原生 fallback 参考：
 [openai/codex#2555](https://github.com/openai/codex/issues/2555#issuecomment-3381914894)
 
-### Step 3. 安装 Lanhu Helper 谷歌浏览器插件
-
-安装 [Lanhu Helper](https://lanhu.refineup.com/ecosystem/lanhu-helper) 后，可以直接从蓝湖右键复制选中图层链接或示例提示词。
-
 ### Step 4. 将蓝湖链接和提示词发给 AI
+
+在要交给 AI 的那个图层上右键，用「复制示例提示词」或「复制选中图层链接」拿到内容，直接发给 AI。
 
 ```text
 请根据这个蓝湖设计稿实现
@@ -217,7 +219,7 @@ https://lanhuapp.com/web/#/item/project/detailDetach?tid={tid}&pid={pid}&project
 
 ## 生态
 
-[Lanhu Helper](https://lanhu.refineup.com/ecosystem/lanhu-helper) — 配套的蓝湖 Chrome 浏览器扩展，可以从蓝湖右键复制选中图层链接和示例提示词
+[Lanhu Helper](https://lanhu.refineup.com/ecosystem/lanhu-helper) — 配套的蓝湖 Chrome 浏览器扩展，在图层上右键即可复制 Token、选中图层链接和示例提示词
 
 ## 参与开发
 
@@ -241,10 +243,10 @@ cp .env.local.example .env.local
 
 字段说明：
 
-| 字段             | 必填           | 用途                                                                                       |
-| ---------------- | -------------- | ------------------------------------------------------------------------------------------ |
-| `LANHU_TOKEN`    | 是             | 调用蓝湖 API 的 Token，获取方式见 [这里](https://lanhu.refineup.com/guide/get-lanhu-token) |
-| `LANHU_TEST_URL` | 跑集成测试时填 | 一条真实可访问的蓝湖设计稿详情链接，集成测试会向它发请求                                   |
+| 字段             | 必填           | 用途                                                                                |
+| ---------------- | -------------- | ----------------------------------------------------------------------------------- |
+| `LANHU_TOKEN`    | 是             | 调用蓝湖 API 的 Token。用 Lanhu Helper 在已登录蓝湖的图层上右键「复制 Token」后写入 |
+| `LANHU_TEST_URL` | 跑集成测试时填 | 一条真实可访问的蓝湖设计稿详情链接，集成测试会向它发请求                            |
 
 ### 3. 三层验证矩阵
 
